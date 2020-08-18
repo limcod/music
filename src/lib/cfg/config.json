@@ -24,8 +24,7 @@
         "app-local-head": "../views/app/components/local/head.js"
       },
       "subject": {
-        "app-subject-home": "../views/app/home/home.js",
-        "app-subject-info": "../views/app/info.js"
+        "app-subject-home": "../views/app/home/home.js"
       }
     },
     "dialog": {
