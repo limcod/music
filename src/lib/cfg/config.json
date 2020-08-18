@@ -3,8 +3,6 @@
   "themeColor": "#333333",
   "appUrl": "http://127.0.0.1:3000/",
   "socketUrl": "http://127.0.0.1:3000/",
-  "updateUrl": "http://127.0.0.1:3000/",
-  "updateFileUrl": "http://127.0.0.1:3000/public/dist/",
   "appSize": [
     800,
     500
@@ -26,7 +24,7 @@
         "app-local-head": "../views/app/components/local/head.js"
       },
       "subject": {
-        "app-subject-home": "../views/app/home.js",
+        "app-subject-home": "../views/app/home/home.js",
         "app-subject-info": "../views/app/info.js"
       }
     },
