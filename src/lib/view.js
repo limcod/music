@@ -72,7 +72,8 @@ class view {
                     if (this.IComponent?.name === key) {
                         this.args = null;
                         if (this.$refs[key]) this.$refs[key].args = args;
-                        return;S
+                        return;
+                        S
                     }
                     let size_ = [], I_lib = [], R_lib = [];
                     if (this.LoadedComponents.indexOf(key) < 0) {
@@ -182,7 +183,7 @@ class view {
                     let index1 = this.LoadedComponents.indexOf(val.name);
                     if (index1 < 0) this.LoadedComponents.unshift(val.name);
                     else this.$util.swapArr(this.LoadedComponents, index1, 0);
-                    setTimeout(() => this.eliminateComponent(), 1000);
+                    Vue.nextTick().then(() => this.eliminateComponent());
                 }
             }
         }
