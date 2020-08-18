@@ -63,19 +63,16 @@ class view {
                         this.init('menu-subject-home');
                 }
             },
-            updated() {
-                // console.log(this.$refs[this.IComponent.name])
-            },
             methods: {
                 async init(componentName) {
                     this.dialogMessage();
                     await this.switchComponent(componentName);
                 },
                 async switchComponent(key, args) {
-                    if (this.IComponent && this.IComponent.name === key) {
-                        this.args = args;
+                    if (this.IComponent?.name === key) {
+                        this.args = null;
                         if (this.$refs[key]) this.$refs[key].args = args;
-                        return;
+                        return;S
                     }
                     let size_ = [], I_lib = [], R_lib = [];
                     if (this.LoadedComponents.indexOf(key) < 0) {
@@ -122,7 +119,7 @@ class view {
                             }
                     }
                     //根据页面参数修正窗口大小和位置
-                    if (size_ && size_.length > 0) {
+                    if (size_?.length > 0) {
                         Rectangle.width = size_[0];
                         Rectangle.height = size_[1];
                         Rectangle.x = this.$util.remote.getCurrentWindow().getPosition()[0] + ((this.$util.remote.getCurrentWindow().getBounds().width - size_[0]) / 2);
@@ -136,7 +133,7 @@ class view {
                     Rectangle.x = parseInt(Rectangle.x);
                     Rectangle.y = parseInt(Rectangle.y);
                     this.$util.remote.getCurrentWindow().setBounds(Rectangle);
-                    this.$args = args || null;
+                    this.args = args;
                     this.IComponent = this.AppComponents[key];
                 },
                 dialogInit(data) {
