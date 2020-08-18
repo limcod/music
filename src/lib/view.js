@@ -68,7 +68,6 @@ class view {
             },
             methods: {
                 async init(componentName) {
-                    this.socketMessage();
                     this.dialogMessage();
                     await this.switchComponent(componentName);
                 },
@@ -139,29 +138,6 @@ class view {
                     this.$util.remote.getCurrentWindow().setBounds(Rectangle);
                     this.$args = args || null;
                     this.IComponent = this.AppComponents[key];
-                },
-                socketInit() {
-                    this.$util.ipcRenderer.send('socketInit', this.$config.socketUrl);
-                },
-                socketMessage() {
-                    this.$util.ipcRenderer.on('message', (event, req) => {
-                        switch (req.code) {
-                            case 0:
-                                let path = req.result.split('.');
-                                if (path.length === 1) this[path[0]] = req.data;
-                                if (path.length === 2) this.$refs[path[0]][path[1]] = req.data;
-                                break;
-                            case -1:
-                                console.log(req.msg);
-                                break;
-                            default:
-                                console.log('socketMessage...');
-                                console.log(req)
-                        }
-                    })
-                },
-                socketSend(path, result, data) {
-                    this.$util.ipcRenderer.send('socketSend', JSON.stringify({path, result, data}));
                 },
                 dialogInit(data) {
                     let args = {

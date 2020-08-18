@@ -156,35 +156,6 @@ class main {
         this.is_Dialogs[id] = true;
     }
 
-    async createSocket() {
-        this.socket = require('socket.io-client')(this.config.socketUrl, {query: `Authorization=${this.Authorization}`});
-        this.socket.on('connect', () => {
-            this.win.webContents.executeJavaScript('console.log(\'[socket]connect\');');
-            this.socketStatus = 1;
-        });
-        this.socket.on('message', (data) => {
-            if (data.code === 11) {//刷新Token
-                this.Authorization = data.data;
-                return;
-            }
-            this.win.webContents.send('message', data);
-            for (let i of this.dialogs) if (i) i.webContents.send('message', data);
-        });
-        this.socket.on('error', (msg) => {
-            this.win.webContents.send('data', {code: -2, msg});
-        });
-        this.socket.on('disconnect', () => {
-            this.socketStatus = 0;
-            this.win.webContents.executeJavaScript('console.log(\'[socket]disconnect\');');
-            setTimeout(() => {
-                if (this.socketStatus === 0) this.socket.open()
-            }, 1000 * 60 * 3)
-        });
-        this.socket.on('close', () => {
-            this.win.webContents.send('data', {code: -1, msg: '[socket]close'});
-        });
-    }
-
     async init() {
         app.allowRendererProcessReuse = true;
         if (!app.requestSingleInstanceLock()) {
@@ -298,22 +269,6 @@ class main {
         //最小化
         ipcMain.on('newWin-mini', (event, id) => {
             this.dialogs[id].minimize();
-        });
-
-        /**
-         * socket
-         * */
-        //初始化
-        ipcMain.on('socketInit', async (event, args) => {
-            if (!this.socket) await this.createSocket();
-        });
-        //重新连接
-        ipcMain.on('socketReconnection', async (event, args) => {
-            if (!this.socket) this.socket.open();
-        });
-        //发消息
-        ipcMain.on('socketSend', async (event, args) => {
-            if (this.socket) this.socket.send(args);
         });
 
         /**
