@@ -27,13 +27,12 @@ module.exports = {
         methods: {
             show() {
                 window.close();
-                this.$util.ipcRenderer.send('show');
+                this.$ipcRenderer.send('show');
             },
             closed() {
                 document.body.onmouseleave = null;
                 window.close();
-                this.closed_txt = "退出中";
-                this.$util.ipcRenderer.send('closed');
+                this.$ipcRenderer.send('closed');
             }
         }
     }

@@ -1,5 +1,9 @@
 'use strict';
-const _ = require('./util');
+const {ipcRenderer, remote} = require('electron');
+const log = require('./util/log');
+const storage = require('./util/storage');
+const general = require('./util/general');
+const config = require('./cfg/config.json');
 
 class view {
     static getInstance() {
@@ -7,26 +11,25 @@ class view {
         return view.instance;
     }
 
-    constructor() {
-        this.config = require('./cfg/config.json');
-    }
+    constructor() {}
 
     /**
      * vue组件
      * 渲染进程
      * */
     async vue(Vue, el, conf) {
-        const that = this;
-        document.title = _.remote.app.name;
-        Vue.prototype.$config = that.config;
-        Vue.prototype.$util = _;
-        Vue.prototype.$srl = (srl) => that.config.appUrl + srl;
+        Vue.prototype.$config = config;
+        Vue.prototype.$remote = remote;
+        Vue.prototype.$ipcRenderer = ipcRenderer;
+        Vue.prototype.$general = general;
+        Vue.prototype.$log = log;
+        Vue.prototype.$storage = storage;
         const view = async (key, view) => {
             let v = require(view);
             if (v.components) {
                 v.main.components = {};
                 for (let i of v.components) {
-                    let {lib, main} = require(that.config['views'][el]['local'][i]);
+                    let {lib, main} = require(config['views'][el]['local'][i]);
                     v.main.components[i] = main;
                     v.lib = [...lib, ...v.lib];
                 }
@@ -35,8 +38,8 @@ class view {
             return v;
         };
         let viewsList = [];
-        for (let i in that.config['views'][el]['global']) {
-            let item = that.config['views'][el]['global'][i];
+        for (let i in config['views'][el]['global']) {
+            let item = config['views'][el]['global'][i];
             viewsList.push(view(i, item));
         }
         await Promise.all(viewsList);
@@ -44,7 +47,7 @@ class view {
             IComponent: null,
             AppComponents: {},
             LoadedComponents: [],
-            themeColor: that.config.themeColor
+            themeColor: config.themeColor
         };
         if (conf) app_data.conf = conf;
         app_data.category = el;
@@ -63,6 +66,9 @@ class view {
                         this.init('menu-subject-home');
                 }
             },
+            updated() {
+                // console.log(this.$refs[this.IComponent.name])
+            },
             methods: {
                 async init(componentName) {
                     this.dialogMessage();
@@ -73,7 +79,6 @@ class view {
                         this.args = null;
                         if (this.$refs[key]) this.$refs[key].args = args;
                         return;
-                        S
                     }
                     let size_ = [], I_lib = [], R_lib = [];
                     if (this.LoadedComponents.indexOf(key) < 0) {
@@ -97,8 +102,8 @@ class view {
                         if (I_lib.indexOf(repeat_Lib[i]) > -1) delete I_lib[I_lib.indexOf(repeat_Lib[i])];
                         if (R_lib.indexOf(repeat_Lib[i]) > -1) delete R_lib[R_lib.indexOf(repeat_Lib[i])];
                     }
-                    await this.$util.loadCssJs(I_lib);
-                    await this.$util.removeCssJs(R_lib);
+                    await this.$general.loadCssJs(I_lib);
+                    await this.$general.removeCssJs(R_lib);
                     let Rectangle = {};
                     switch (this.category) {
                         case 'app':
@@ -123,24 +128,24 @@ class view {
                     if (size_?.length > 0) {
                         Rectangle.width = size_[0];
                         Rectangle.height = size_[1];
-                        Rectangle.x = this.$util.remote.getCurrentWindow().getPosition()[0] + ((this.$util.remote.getCurrentWindow().getBounds().width - size_[0]) / 2);
-                        Rectangle.y = this.$util.remote.getCurrentWindow().getPosition()[1] + ((this.$util.remote.getCurrentWindow().getBounds().height - size_[1]) / 2);
+                        Rectangle.x = this.$remote.getCurrentWindow().getPosition()[0] + ((this.$remote.getCurrentWindow().getBounds().width - size_[0]) / 2);
+                        Rectangle.y = this.$remote.getCurrentWindow().getPosition()[1] + ((this.$remote.getCurrentWindow().getBounds().height - size_[1]) / 2);
                     } else {
-                        Rectangle.x = this.$util.remote.getCurrentWindow().getPosition()[0] + ((this.$util.remote.getCurrentWindow().getBounds().width - Rectangle.width) / 2);
-                        Rectangle.y = this.$util.remote.getCurrentWindow().getPosition()[1] + ((this.$util.remote.getCurrentWindow().getBounds().height - Rectangle.height) / 2);
+                        Rectangle.x = this.$remote.getCurrentWindow().getPosition()[0] + ((this.$remote.getCurrentWindow().getBounds().width - Rectangle.width) / 2);
+                        Rectangle.y = this.$remote.getCurrentWindow().getPosition()[1] + ((this.$remote.getCurrentWindow().getBounds().height - Rectangle.height) / 2);
                     }
                     Rectangle.width = parseInt(Rectangle.width);
                     Rectangle.height = parseInt(Rectangle.height);
                     Rectangle.x = parseInt(Rectangle.x);
                     Rectangle.y = parseInt(Rectangle.y);
-                    this.$util.remote.getCurrentWindow().setBounds(Rectangle);
+                    this.$remote.getCurrentWindow().setBounds(Rectangle);
                     this.args = args;
                     this.IComponent = this.AppComponents[key];
                 },
                 dialogInit(data) {
                     let args = {
-                        width: this.$util.remote.getCurrentWindow().getBounds().width,
-                        height: this.$util.remote.getCurrentWindow().getBounds().height,
+                        width: this.$remote.getCurrentWindow().getBounds().width,
+                        height: this.$remote.getCurrentWindow().getBounds().height,
                         name: data.name, //名称
                         v: data.v, //页面id
                         resizable: false,// 是否支持调整窗口大小
@@ -156,10 +161,10 @@ class view {
                     if (data.parent) args.parent = data.parent;
                     if (data.modal) args.modal = data.modal;
                     if (data.resizable) args.resizable = data.resizable;
-                    this.$util.ipcRenderer.send('new-dialog', args);
+                    this.$ipcRenderer.send('new-dialog', args);
                 },
                 dialogMessage() {
-                    this.$util.ipcRenderer.on('newWin-rbk', (event, req) => {
+                    this.$ipcRenderer.on('newWin-rbk', (event, req) => {
                         let path = req.r.split('.');
                         if (path.length === 1) this[path[0]] = req.data;
                         if (path.length === 2) this.$refs[path[0]][path[1]] = req.data;
@@ -167,7 +172,7 @@ class view {
                     })
                 },
                 dialogSend(args) {
-                    this.$util.ipcRenderer.send('newWin-feedback', args);
+                    this.$ipcRenderer.send('newWin-feedback', args);
                 },
                 eliminateComponent() {
                     let Components = Object.getOwnPropertyNames(this.$refs).sort();
@@ -182,7 +187,7 @@ class view {
                 IComponent(val) {
                     let index1 = this.LoadedComponents.indexOf(val.name);
                     if (index1 < 0) this.LoadedComponents.unshift(val.name);
-                    else this.$util.swapArr(this.LoadedComponents, index1, 0);
+                    else this.$general.swapArr(this.LoadedComponents, index1, 0);
                     Vue.nextTick().then(() => this.eliminateComponent());
                 }
             }
