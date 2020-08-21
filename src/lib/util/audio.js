@@ -15,7 +15,7 @@ class audio {
 
     }
 
-    close() {
+    clear() {
         this.currentAudio = null; //当前播放音源
         this.sourceAudio = null; //音频的源
         this.gainNode = null; //初始化音量控制节点
@@ -38,7 +38,7 @@ class audio {
 
             this.currentAudio.onplay = (ev) => {//开始播放
                 console.log('onplay', ev)
-                this.gainNode.gain.linearRampToValueAtTime(1.0, this.AudioContext.currentTime + 2); //音量淡入
+                this.gainNode.gain.linearRampToValueAtTime(1.0, this.AudioContext.currentTime + 1); //音量淡入
             }
 
             this.currentAudio.onpause = (ev) => {//播放暂停
@@ -47,19 +47,17 @@ class audio {
 
             this.currentAudio.onended = (ev) => {//播放完毕
                 console.log('onended', ev)
-                this.close();
+                this.clear();
             }
         }
     }
 
     pause() {
-        this.gainNode.gain.linearRampToValueAtTime(0, this.AudioContext.currentTime + 2); //音量淡出
+        this.gainNode.gain.linearRampToValueAtTime(0, this.AudioContext.currentTime + 1); //音量淡出
         setTimeout(() => {
             this.currentAudio.pause();
         }, 2000);
     }
-
-    clear
 }
 
 module.exports = audio.getInstance();
