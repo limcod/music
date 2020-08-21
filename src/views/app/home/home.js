@@ -38,7 +38,7 @@ module.exports = {
         },
         methods: {
             play() {
-                this.$audio.play('http://www.jq22.com/demo/jqueryydbfq202001012203/1.mp3');
+                this.$audio.play('http://music.163.com/song/media/outer/url?id=504924216.mp3');
             },
             pause(){
                 this.$audio.pause();
