@@ -2,6 +2,7 @@
   "devTools": true,
   "themeColor": "#333333",
   "appUrl": "http://127.0.0.1:3000/",
+  "socketUrl": "http://127.0.0.1:3000/",
   "appSize": [
     800,
     500
@@ -16,9 +17,7 @@
   ],
   "views": {
     "app": {
-      "global": {
-        "app-global-test": "../views/app/components/global/test.js"
-      },
+      "global": {},
       "local": {
         "app-local-head": "../views/app/components/local/head.js"
       },
@@ -30,9 +29,7 @@
       "global": {
         "dialog-global-head": "../views/dialog/components/global/head.js"
       },
-      "local": {
-        "dialog-local-head": "../views/dialog/components/local/head.js"
-      },
+      "local": {},
       "subject": {
         "dialog-subject-exitprompt": "../views/dialog/exitprompt.js",
         "dialog-subject-message": "../views/dialog/message.js",

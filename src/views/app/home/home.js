@@ -19,6 +19,8 @@ module.exports = {
           <div class="subclass no-drag">
              <app-local-head v-bind:IComponentName="$options.name" ref="app-local-head"></app-local-head>
              <h4>首页</h4>
+             <button @click="play" class="button">播放</button>
+             <button @click="pause" class="button">暂停</button>
           </div>
         `,
         //加载
@@ -34,7 +36,14 @@ module.exports = {
         //开启缓存后 卸载
         deactivated() {
         },
-        methods: {},
+        methods: {
+            play() {
+                this.$audio.play('http://www.jq22.com/demo/jqueryydbfq202001012203/1.mp3');
+            },
+            pause(){
+                this.$audio.pause();
+            }
+        },
         watch: {
             args(v) {//参数刷新后
             }

@@ -5,13 +5,16 @@ const storage = require('./util/storage');
 const general = require('./util/general');
 const config = require('./cfg/config.json');
 
+const audio = require('../lib/util/audio');//播放模块
+
 class view {
     static getInstance() {
         if (!view.instance) view.instance = new view();
         return view.instance;
     }
 
-    constructor() {}
+    constructor() {
+    }
 
     /**
      * vue组件
@@ -24,6 +27,8 @@ class view {
         Vue.prototype.$general = general;
         Vue.prototype.$log = log;
         Vue.prototype.$storage = storage;
+
+        Vue.prototype.$audio = audio; //播放模块
         const view = async (key, view) => {
             let v = require(view);
             if (v.components) {
