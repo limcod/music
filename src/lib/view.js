@@ -27,8 +27,6 @@ class view {
         Vue.prototype.$general = general;
         Vue.prototype.$log = log;
         Vue.prototype.$storage = storage;
-
-        Vue.prototype.$audio = audio; //播放模块
         const view = async (key, view) => {
             let v = require(view);
             if (v.components) {
@@ -56,6 +54,7 @@ class view {
         };
         if (conf) app_data.conf = conf;
         app_data.category = el;
+        app_data.audio = audio; //播放模块
         return {
             el: `#${el}`,
             data: app_data,

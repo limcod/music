@@ -15,9 +15,7 @@ module.exports = {
             }
         },
         template: `<div class="head drag">
-        <div>
-        <span>{{$remote.app.name}} {{$remote.app.getVersion()}}</span>
-        </div>
+        <div></div>
         <div class="no-drag">
         <i @click="settings" class="iconfont iconSettingscontrol no-drag cursor-pointer"></i>
         <i @click="system('mini')" class="iconfont iconMinus no-drag cursor-pointer"></i>
