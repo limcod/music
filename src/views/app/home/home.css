@@ -13,13 +13,6 @@
     align-items: center;
 }
 
-.music-progress {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-}
-
 .music-ato-but {
     width: 50%;
 }
@@ -29,6 +22,14 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
+}
+
+/*播放进度条*/
+.music-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 .music-progress-input::-webkit-slider-thumb {

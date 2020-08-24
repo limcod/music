@@ -12,7 +12,9 @@ module.exports = {
     main: {
         data() {
             return {
-                args: null
+                args: null,
+                isProgress: 0, //是否正在拖动进度
+                speedProgress: 0,//拖动进度结果
             }
         },
         template: `
@@ -23,11 +25,21 @@ module.exports = {
                    <button class="button" @click="play">播放</button>
                    <button class="button" @click="pause">暂停</button>
                 </div>
+                <div>
+                <input type="range" max="100" min="0" step="0" value="100" @input="$parent.audio.setVolume($event.target.value/100)"/>
+                </div>
                 <div class="music-ato-time">
-                   {{$parent.audio.showTime($parent.audio.ingTime)}} / {{$parent.audio.showTime($parent.audio.allTime)}}
+                   {{isProgress===1?$parent.audio.showTime(speedProgress):$parent.audio.showTime($parent.audio.ingTime)}} / {{$parent.audio.showTime($parent.audio.allTime)}}
                 </div> 
                 <div class="music-progress">
-                    <input type="range" class="music-progress-input" :max="$parent.audio.allTime" :min="0" v-on:input.left="progress" :value="$parent.audio.ingTime" />
+                    <input type="range" class="music-progress-input" 
+                    :max="$parent.audio.allTime.toFixed(0)" 
+                    min="0" 
+                    step="any"
+                    @input="speedProgress=$event.target.value"
+                    @mousedown="isProgress=1"
+                    @mouseup="$parent.audio.currentTime(speedProgress);oProgress()"
+                    :value="isProgress===1?speedProgress:$parent.audio.ingTime"/>
                 </div>
              </div>
           </div>
@@ -52,8 +64,10 @@ module.exports = {
             async pause() {
                 await this.$parent.audio.pause();
             },
-            progress(e) {
-                this.$parent.audio.currentTime(e.target.value);
+            oProgress() {//拖动后延迟0.1秒后显示
+                setTimeout(() => {
+                    this.isProgress = 0;
+                }, 100)
             }
         },
         watch: {

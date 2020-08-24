@@ -12,6 +12,8 @@ class audio {
         this.currentAudio = null; //当前播放音源
         this.sourceAudio = null; //音频的源
         this.gainNode = null; //音量控制节点
+        this.volume = 1.0; //音量
+        this.volumeGradualTime = 0.7;//音量渐进时间(秒)
 
         this.cachedType = 0; //缓存进度 0-1  1为完成
         this.cachedTime = 0; //已缓存时长
@@ -41,7 +43,6 @@ class audio {
                 this.currentAudio.crossOrigin = "anonymous"; //音源跨域
                 this.sourceAudio = this.AudioContext.createMediaElementSource(this.currentAudio);
                 this.gainNode = this.AudioContext.createGain();
-
                 this.sourceAudio.connect(this.gainNode);//链接音量控制节点
                 this.gainNode.connect(this.AudioContext.destination);//输出音源
 
@@ -59,7 +60,8 @@ class audio {
 
                 this.currentAudio.onplay = (ev) => {//开始播放
                     console.log('开始播放')
-                    this.gainNode.gain.linearRampToValueAtTime(1.0, this.AudioContext.currentTime + 2); //音量淡入
+                    this.gainNode.gain.value = 0;//初始音量为0
+                    this.gainNode.gain.linearRampToValueAtTime(this.volume, this.AudioContext.currentTime + this.volumeGradualTime); //音量淡入
                     resolve(0);
                 }
 
@@ -82,11 +84,11 @@ class audio {
 
     async pause() {
         return new Promise((resolve, reject) => {
-            this.gainNode.gain.linearRampToValueAtTime(0, this.AudioContext.currentTime + 2); //音量淡出
+            this.gainNode.gain.linearRampToValueAtTime(0, this.AudioContext.currentTime + this.volumeGradualTime); //音量淡出
             setTimeout(() => {
                 this.currentAudio.pause();
                 resolve(0);
-            }, 2000);
+            }, this.volumeGradualTime * 1000);
         })
     }
 
@@ -95,7 +97,12 @@ class audio {
         if (this.currentAudio) this.currentAudio.currentTime = e;
     }
 
-    //循环播放
+    //设置音量
+    setVolume(e) {
+        if (this.currentAudio && this.gainNode) this.gainNode.gain.value = e;
+    }
+
+    //是否单曲循环
     loop(e) {
         if (this.currentAudio) this.currentAudio.loop = e;
     }
@@ -110,7 +117,8 @@ class audio {
 
     //显示时间为分钟
     showTime(s) {
-        return Math.floor(Number(s.toString().split('.')[0]) / 60) + ' : ' + Number(s.toString().split('.')[0]) % 60;
+        s = Number(s).toFixed(0);
+        return Math.floor(s / 60) + ' : ' + s % 60;
     }
 }
 
