@@ -34,7 +34,7 @@ module.exports = {
                     <div>{{$parent.audio.showTime($parent.audio.allTime)}}</div>
                </div>
                <div class="audio-info-volume">
-                    <input class="audio-info-volume-input" type="range" max="100" min="0" step="1" value="100" @input="$parent.audio.setVolume($event.target.value)"/>
+                    <input class="audio-info-volume-input" type="range" max="100" min="0" step="1" :value="parseInt($parent.audio.volume * 100)" @input="$parent.audio.setVolume($event.target.value)"/>
                     <div>{{parseInt($parent.audio.volume * 100)}}</div>
                </div>
         </div>`,
