@@ -1,5 +1,6 @@
 @import "assembly.css";
 @import "icon.css";
+@import "audio.css";
 
 #app,#dialog,#menu {
     color: var(--white);
@@ -33,8 +34,7 @@
 /*子页面*/
 .subclass {
     padding: 36px 10px 10px;
-    height: 100%;
-    overflow: overlay;
+    height: calc(100% - 50px);
 }
 
 #app .subclass{

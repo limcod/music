@@ -1,5 +1,6 @@
 'use strict';
 const {resolve} = require('path');
+const {fork} = require("child_process");
 const {shell, app, BrowserWindow, globalShortcut, ipcMain, screen, Tray} = require('electron');
 const log = require('./util/log');
 const general = require('./util/general');
@@ -119,7 +120,7 @@ class main {
             }
         }
         //创建一个与父类窗口同大小、坐标的窗口
-        let opt = this.browserWindowOpt([args.width,args.height]);
+        let opt = this.browserWindowOpt([args.width, args.height]);
         if (typeof args.parent === 'string') {
             if (args.parent === 'win') opt.parent = this.win;
             opt.x = this.win.getPosition()[0] //+ ((this.win.getBounds().width - args.width) / 2);
@@ -277,6 +278,33 @@ class main {
          * */
         ipcMain.on('global', (event, args) => {
             return this[args]
+        });
+    }
+
+    //音乐源线程
+    mcSource() {
+        let mc = null;
+        let Type = 0; //0 未运行 1 就绪
+
+        ipcMain.on('mcSourceInit', () => {
+            mc = fork(resolve(__dirname, './util/source/polymerization.js'));
+            mc.on('message', (e) => {
+                switch (e.code) {
+                    case 11:
+                        Type = 1;
+                        break;
+                }
+                this.win.webContents.send('mcSourceMessage', e);
+                for (let i of this.dialogs) if (i) i.webContents.send('mcSourceMessage', e);
+            });
+            mc.on("close", async () => {
+                mc = null;
+                Type = 0;
+            });
+        })
+
+        ipcMain.on('mcSourceSend', async (event, args) => {
+            if (Type === 1) mc.send(args);
         });
     }
 

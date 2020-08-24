@@ -1,0 +1,98 @@
+.audio-info {
+    position: relative;
+    height: 50px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.audio-info-but {
+    padding: 0 10px;
+    width: 20%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.audio-info-but button {
+    color: var(--white);
+    background-color: transparent;
+}
+
+/*播放进度条*/
+.audio-info-progress {
+    position: relative;
+    padding: 0 10px;
+    width: 60%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+}
+
+.audio-info-progress div {
+    width: 10%;
+    text-align: center;
+}
+
+.audio-info-progress-input {
+    width: 80%;
+    height: 2px;
+    padding: 0;
+    margin: 0;
+    outline: 0;
+    cursor: pointer;
+    -webkit-appearance: none !important;
+}
+
+.audio-info-progress-input::-webkit-slider-thumb {
+    width: 6px;
+    height: 6px;
+    background-color: #FFF;
+    cursor: pointer;
+    -webkit-appearance: none !important;
+}
+
+.audio-info-progress-input::-webkit-slider-thumb:active {
+    border: 0;
+    background-color: #FFF;
+}
+
+/*音量条*/
+.audio-info-volume {
+    padding: 0 10px;
+    position: relative;
+    width: 20%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+}
+
+.audio-info-volume div {
+    width: 20%;
+    text-align: center;
+}
+
+.audio-info-volume-input {
+    width: 80%;
+    height: 2px;
+    padding: 0;
+    margin: 0;
+    outline: 0;
+    cursor: pointer;
+    -webkit-appearance: none !important;
+}
+
+.audio-info-volume-input::-webkit-slider-thumb {
+    width: 6px;
+    height: 6px;
+    background-color: #FFF;
+    cursor: pointer;
+    -webkit-appearance: none !important;
+}
+
+.audio-info-volume-input::-webkit-slider-thumb:active {
+    border: 0;
+    background-color: #FFF;
+}

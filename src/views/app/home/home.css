@@ -2,55 +2,34 @@
     position: relative;
 }
 
-
-.music-ato {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 55px;
-    display: flex;
-    align-items: center;
-}
-
-.music-ato-but {
-    width: 50%;
-}
-
-.music-ato-time {
-    width: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-}
-
-/*播放进度条*/
-.music-progress {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-}
-
-.music-progress-input::-webkit-slider-thumb {
-    width: 6px;
-    height: 6px;
-    background-color: #FFF;
-    cursor: pointer;
-    -webkit-appearance: none !important;
-}
-
-.music-progress-input::-webkit-slider-thumb:active {
-    border: 0;
-    background-color: #FFF;
-}
-
-.music-progress-input {
-    width: 100%;
-    height: 2px;
+.home-info {
     padding: 0;
-    margin: 0;
-    outline: 0;
-    cursor: pointer;
-    -webkit-appearance: none !important;
+    height: 100%;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.home-test {
+    height: 100%;
+    overflow: hidden;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns:repeat(4, 1fr);
+    grid-auto-rows: 170px;
+    /*grid-gap: 10px 10px;*/
+}
+
+.home-test-item {
+    position: relative;
+    background-color: var(--grayShadow);
+}
+
+.home-test-item-tit{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    font-size: 14px;
+    background-color: var(--blackShadow);
+    min-height: 50px;
+    padding: 5px 8px;
 }

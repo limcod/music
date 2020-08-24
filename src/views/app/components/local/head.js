@@ -16,7 +16,7 @@ module.exports = {
         },
         template: `<div class="head drag">
         <div></div>
-        <div class="no-drag">
+        <div class="no-drag" style="background-color: rgba(26, 26, 26, 0.5);">
         <i @click="settings" class="iconfont iconSettingscontrol no-drag cursor-pointer"></i>
         <i @click="system('mini')" class="iconfont iconMinus no-drag cursor-pointer"></i>
         <i @click="system('closed')" class="iconfont iconCancelcontrol no-drag cursor-pointer"></i>

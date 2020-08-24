@@ -10,6 +10,8 @@
         <component v-if="IComponent&&IComponent.keepAlive" :is="IComponent.name" :ref="IComponent.name"></component>
     </keep-alive>
     <component v-if="IComponent&&!IComponent.keepAlive" :is="IComponent.name" :ref="IComponent.name"></component>
+    <app-global-audio v-if="IComponent" v-bind:IComponentName="IComponent.name"
+                      ref="app-global-audio"></app-global-audio>
 </div>
 <div id="dialog" style="display: none;" class="drag" :style="'--theme:'+themeColor">
     <keep-alive :max="10">
@@ -17,7 +19,7 @@
     </keep-alive>
     <component v-if="IComponent&&!IComponent.keepAlive" :is="IComponent.name" :ref="IComponent.name"></component>
     <dialog-global-head v-if="IComponent" v-bind:IComponentName="IComponent.name"
-                        ref="dialog-head"></dialog-global-head>
+                        ref="dialog-global-head"></dialog-global-head>
 </div>
 <div id="menu" style="display: none;width: 100%;height: 100%;" class="no-drag" :style="'--theme:'+themeColor">
     <keep-alive :max="10">

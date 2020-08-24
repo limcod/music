@@ -1,5 +1,4 @@
 'use strict';
-const execSync = require('child_process').execSync;
 module.exports = {
     keepAlive: true,
     size: [],
@@ -13,34 +12,22 @@ module.exports = {
         data() {
             return {
                 args: null,
-                isProgress: 0, //是否正在拖动进度
-                speedProgress: 0,//拖动进度结果
+                isMcSource: false,
+                data: null
             }
         },
         template: `
           <div class="subclass no-drag">
              <app-local-head v-bind:IComponentName="$options.name" ref="app-local-head"></app-local-head>
-             <div class="music-ato">
-                <div class="music-ato-but">
-                   <button class="button" @click="play">播放</button>
-                   <button class="button" @click="pause">暂停</button>
-                </div>
-                <div>
-                <input type="range" max="100" min="0" step="0" value="100" @input="$parent.audio.setVolume($event.target.value/100)"/>
-                </div>
-                <div class="music-ato-time">
-                   {{isProgress===1?$parent.audio.showTime(speedProgress):$parent.audio.showTime($parent.audio.ingTime)}} / {{$parent.audio.showTime($parent.audio.allTime)}}
-                </div> 
-                <div class="music-progress">
-                    <input type="range" class="music-progress-input" 
-                    :max="$parent.audio.allTime.toFixed(0)" 
-                    min="0" 
-                    step="any"
-                    @input="speedProgress=$event.target.value"
-                    @mousedown="isProgress=1"
-                    @mouseup="$parent.audio.currentTime(speedProgress);oProgress()"
-                    :value="isProgress===1?speedProgress:$parent.audio.ingTime"/>
-                </div>
+             <div class="home-info">
+                 <div v-if="data" class="home-test">
+                    <div 
+                      v-for="(item, index) in data.playlists" 
+                      class="home-test-item bg-img"
+                      :style="{'background-image': 'url('+item.coverImgUrl+')'}">
+                       <div class="home-test-item-tit">{{item.copywriter}}</div>
+                    </div>
+                 </div>
              </div>
           </div>
         `,
@@ -58,20 +45,22 @@ module.exports = {
         deactivated() {
         },
         methods: {
-            async play() {
-                await this.$parent.audio.play('http://music.163.com/song/media/outer/url?id=504924216.mp3');
-            },
-            async pause() {
-                await this.$parent.audio.pause();
-            },
-            oProgress() {//拖动后延迟0.1秒后显示
-                setTimeout(() => {
-                    this.isProgress = 0;
-                }, 100)
+            getHighquality() {//获取热门歌单
+                this.$parent.mcSourceSend(`${this.$options.name}.data`, {
+                    func: 'highquality'
+                })
             }
         },
         watch: {
             args(v) {//参数刷新后
+            },
+            isMcSource(v) { //音乐源加载完毕
+                if (v) {
+                    this.getHighquality();
+                }
+            },
+            data(v) {
+                console.log(v)
             }
         }
     }

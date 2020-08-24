@@ -17,7 +17,9 @@
   ],
   "views": {
     "app": {
-      "global": {},
+      "global": {
+        "app-global-audio": "../views/app/components/global/audio.js"
+      },
       "local": {
         "app-local-head": "../views/app/components/local/head.js"
       },
