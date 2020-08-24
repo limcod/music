@@ -62,7 +62,6 @@ class view {
                 switch (this.category) {
                     case 'app':
                         this.init('app-subject-home');
-                        this.mcSourceInit();
                         break;
                     case 'dialog':
                         this.init(this.conf.v);
@@ -77,7 +76,6 @@ class view {
             methods: {
                 async init(componentName) {
                     this.dialogMessage();
-                    this.mcSourceMessage();
                     await this.switchComponent(componentName);
                 },
                 async switchComponent(key, args) {
@@ -179,27 +177,6 @@ class view {
                 },
                 dialogSend(args) {
                     this.$ipcRenderer.send('newWin-feedback', args);
-                },
-                mcSourceMessage() {
-                    this.$ipcRenderer.on('mcSourceMessage', (event, req) => {
-                        if (req.code === 11) {
-                            for (let i in this.$refs) {
-                                this.$refs[i].isMcSource = true;
-                            }
-                            return;
-                        }
-                        if (req.type !== this.category) return;
-                        let path = req.r.split('.');
-                        if (path.length === 1) this[path[0]] = req.data;
-                        if (path.length === 2) this.$refs[path[0]][path[1]] = req.data;
-                        if (path.length === 3 && this.$refs[path[0]]) this.$refs[path[0]].$refs[path[1]][path[2]] = req.data;
-                    })
-                },
-                mcSourceSend(r, data) {
-                    this.$ipcRenderer.send('mcSourceSend', {type: this.category, r, data});
-                },
-                mcSourceInit() {
-                    this.$ipcRenderer.send('mcSourceInit');
                 },
                 eliminateComponent() {
                     let Components = Object.getOwnPropertyNames(this.$refs).sort();

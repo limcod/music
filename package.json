@@ -8,7 +8,7 @@
   "author": "youliso@Hotmail.com",
   "license": "MIT",
   "scripts": {
-    "update": "npm update",
+    "update": "npx npm update",
     "retrieval": "npx gulp retrieval",
     "start src": "electron src/lib/index.js",
     "start dist": "electron  dist/lib/index.js",
@@ -80,7 +80,7 @@
     }
   },
   "devDependencies": {
-    "electron": "^9.2.0",
+    "electron": "^9.2.1",
     "electron-builder": "^22.8.0",
     "google-closure-compiler": "^20200517.0.0",
     "gulp": "^4.0.2",

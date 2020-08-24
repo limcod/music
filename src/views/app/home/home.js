@@ -45,22 +45,9 @@ module.exports = {
         deactivated() {
         },
         methods: {
-            getHighquality() {//获取热门歌单
-                this.$parent.mcSourceSend(`${this.$options.name}.data`, {
-                    func: 'highquality'
-                })
-            }
         },
         watch: {
             args(v) {//参数刷新后
-            },
-            isMcSource(v) { //音乐源加载完毕
-                if (v) {
-                    this.getHighquality();
-                }
-            },
-            data(v) {
-                console.log(v)
             }
         }
     }
