@@ -44,8 +44,7 @@ module.exports = {
         //开启缓存后 卸载
         deactivated() {
         },
-        methods: {
-        },
+        methods: {},
         watch: {
             args(v) {//参数刷新后
             }

@@ -1,6 +1,6 @@
 'use strict';
 const {resolve} = require('path');
-const {fork} = require("child_process");
+const {existsSync, readdirSync, statSync, unlinkSync, rmdirSync} = require('fs');
 const {shell, app, BrowserWindow, globalShortcut, ipcMain, screen, Tray} = require('electron');
 const config = require('./cfg/config.json');
 
@@ -11,18 +11,30 @@ class main {
     }
 
     constructor() {
-        this.Authorization = ""; //token
         this.win = null; //主窗口
         this.dialogs = []; //弹框组
         this.is_Dialogs = []; //弹框组状态
         this.appTray = null;//托盘
         this.menu = null; //托盘窗口
-        this.socket = null;
-        this.socketStatus = 0; // socket状态 0断开 1 连接
     }
 
-    global(key) {
-        return this[key];
+    /**
+     * 删除目录和内部文件
+     * */
+    delDir(path) {
+        let files = [];
+        if (existsSync(path)) {
+            files = readdirSync(path);
+            files.forEach((file, index) => {
+                let curPath = path + "/" + file;
+                if (statSync(curPath).isDirectory()) {
+                    this.delDir(curPath); //递归删除文件夹
+                } else {
+                    unlinkSync(curPath); //删除文件
+                }
+            });
+            rmdirSync(path);
+        }
     }
 
     browserWindowOpt(wh) {

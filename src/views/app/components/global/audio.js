@@ -32,11 +32,11 @@ module.exports = {
                     @mouseup="$parent.audio.paused===0?$parent.audio.currentIngTime(speedProgress):$parent.audio.currentTime(speedProgress);oProgress()"
                     :value="isProgress===1?speedProgress:$parent.audio.ingTime"/>
                     <div>{{$parent.audio.showTime($parent.audio.allTime)}}</div>
-               </div>
-               <div class="audio-info-volume">
+                </div>
+                <div class="audio-info-volume">
                     <input class="audio-info-volume-input" type="range" max="100" min="0" step="1" :value="parseInt($parent.audio.volume * 100)" @input="$parent.audio.setVolume($event.target.value)"/>
                     <div>{{parseInt($parent.audio.volume * 100)}}</div>
-               </div>
+                </div>
         </div>`,
         created() {
         },
