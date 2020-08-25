@@ -49,8 +49,7 @@ class view {
         let app_data = {
             IComponent: null,
             AppComponents: {},
-            LoadedComponents: [],
-            themeColor: config.themeColor
+            LoadedComponents: []
         };
         if (conf) app_data.conf = conf;
         app_data.category = el;

@@ -21,8 +21,6 @@ const config = require('./package');
 const asar = true; //是否asar打包
 const allowToChangeInstallationDirectory = true; //是否允许用户修改安装为位置
 let nConf = {//基础配置
-    "devTools": true, //是否打开devTools
-    "themeColor": "#333333", //默认颜色
     "appUrl": "http://127.0.0.1:3000/", //程序主访问地址
     "socketUrl": "http://127.0.0.1:3000/",// 程序socket访问地址
     "appSize": [800, 500],

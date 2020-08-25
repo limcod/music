@@ -1,6 +1,5 @@
 @import "assembly.css";
 @import "icon.css";
-@import "audio.css";
 
 #app,#dialog,#menu {
     color: var(--white);

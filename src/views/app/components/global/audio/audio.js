@@ -1,6 +1,8 @@
 'use strict';
 module.exports = {
-    lib: [],
+    lib: [
+        'views/app/components/global/audio/audio.css'
+    ],
     main: {
         props: {
             IComponentName: {
