@@ -37,6 +37,9 @@ class main {
         }
     }
 
+    /**
+     * 窗口参数
+     * */
     browserWindowOpt(wh) {
         return {
             width: wh[0],
@@ -55,6 +58,9 @@ class main {
         }
     }
 
+    /**
+     * 创建主窗口
+     * */
     async createWindow() {
         this.win = new BrowserWindow(this.browserWindowOpt(config.appSize));
         //加载完毕后显示
@@ -76,6 +82,9 @@ class main {
         await this.win.loadFile(resolve(__dirname, '../index.html'));
     }
 
+    /**
+     * 创建主托盘
+     * */
     async createTray() {
         this.appTray = new Tray(resolve(__dirname, './static/icon/icon.ico'));
         this.appTray.setToolTip(app.name);
@@ -121,6 +130,9 @@ class main {
         })
     }
 
+    /**
+     * 创建弹框
+     * */
     async createDialog(args) {
         let id = this.dialogs.length;
         for (let i of this.dialogs) {
@@ -168,6 +180,9 @@ class main {
         this.is_Dialogs[id] = true;
     }
 
+    /**
+     * 初始化加载
+     * */
     async init() {
         app.allowRendererProcessReuse = true;
         if (!app.requestSingleInstanceLock()) {
@@ -213,6 +228,9 @@ class main {
         app.setAsDefaultProtocolClient(app.name, process.execPath, args);
     }
 
+    /**
+     * 渲染进程通讯
+     * */
     async ipc() {
         /**
          * 主体

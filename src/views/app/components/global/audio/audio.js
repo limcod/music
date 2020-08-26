@@ -46,7 +46,7 @@ module.exports = {
         },
         methods: {
             async play() {
-                await this.$parent.audio.play('file:///C:\\Users\\i\\Desktop\\423f_ef9a_886e_e8a0fc4dc3a397b92900492be527e101.mp3');
+                await this.$parent.audio.play('http://music.163.com/song/media/outer/url?id=504924216.mp3');
             },
             async pause() {
                 await this.$parent.audio.pause();

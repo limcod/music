@@ -18,16 +18,15 @@ class view {
 
     /**
      * vue组件
-     * 渲染进程
      * */
     async vue(Vue, el, conf) {
-        Vue.prototype.$config = config;
+        Vue.prototype.$config = config; //配置文件
         Vue.prototype.$remote = remote;
         Vue.prototype.$ipcRenderer = ipcRenderer;
-        Vue.prototype.$general = general;
-        Vue.prototype.$log = log;
-        Vue.prototype.$storage = storage;
-        const view = async (key, view) => {
+        Vue.prototype.$general = general; //常用方法
+        Vue.prototype.$log = log; //日志
+        Vue.prototype.$storage = storage; //浏览器缓存
+        Vue.prototype.$componentView = async (key, view) => {//页面组件注册
             let v = require(view);
             if (v.components) {
                 v.main.components = {};
@@ -40,19 +39,27 @@ class view {
             Vue.component(key, v.main);
             return v;
         };
+
+        //注册全局组件
         let viewsList = [];
         for (let i in config['views'][el]['global']) {
             let item = config['views'][el]['global'][i];
-            viewsList.push(view(i, item));
+            viewsList.push(Vue.prototype.$componentView(i, item));
         }
-        await Promise.all(viewsList);
-        let app_data = {
-            IComponent: null,
-            AppComponents: {},
-            LoadedComponents: []
+        let globalView = await Promise.all(viewsList);
+        let globalLib = [];
+        globalView.map(e => {
+            if (e?.lib) globalLib.push(...e.lib);
+        })
+        await general.loadCssJs(globalLib);
+
+        let app_data = {//必要参数
+            IComponent: null, //当前页面
+            AppComponents: {}, //已注册页面
+            LoadedComponents: [] //历史访问页面 10个
         };
-        if (conf) app_data.conf = conf;
-        app_data.category = el;
+        if (conf) app_data.conf = conf; //传入参数
+        app_data.category = el; //当前绑定dom的ID
         app_data.audio = audio; //播放模块
         return {
             el: `#${el}`,
@@ -73,11 +80,11 @@ class view {
                 // console.log(this.$refs[this.IComponent.name])
             },
             methods: {
-                async init(componentName) {
+                async init(componentName) {//加载必要方法
                     this.dialogMessage();
                     await this.switchComponent(componentName);
                 },
-                async switchComponent(key, args) {
+                async switchComponent(key, args) {//切换页面方法
                     if (this.IComponent?.name === key) {
                         this.args = null;
                         if (this.$refs[key]) this.$refs[key].args = args;
@@ -85,7 +92,7 @@ class view {
                     }
                     let size_ = [], I_lib = [], R_lib = [];
                     if (this.LoadedComponents.indexOf(key) < 0) {
-                        let vi = await view(key, this.$config['views'][this.category]['subject'][key]);
+                        let vi = await this.$componentView(key, this.$config['views'][this.category]['subject'][key]);
                         this.AppComponents[key] = {
                             keepAlive: vi.keepAlive,
                             size: vi.size,
