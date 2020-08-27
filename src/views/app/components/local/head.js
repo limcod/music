@@ -18,8 +18,8 @@ module.exports = {
         <div></div>
         <div class="no-drag" style="background-color: rgba(26, 26, 26, 0.5);">
         <i @click="settings" class="iconfont iconSettingscontrol no-drag cursor-pointer"></i>
-        <i @click="system('mini')" class="iconfont iconMinus no-drag cursor-pointer"></i>
-        <i @click="system('closed')" class="iconfont iconCancelcontrol no-drag cursor-pointer"></i>
+        <i @click="$ipcRenderer.send('mini')" class="iconfont iconMinus no-drag cursor-pointer"></i>
+        <i @click="$ipcRenderer.send('closed')" class="iconfont iconCancelcontrol no-drag cursor-pointer"></i>
         </div>
     </div>`,
         created() {
@@ -31,23 +31,11 @@ module.exports = {
             async settings() {
                 this.$parent.$parent.dialogInit(
                     {
-                        name: '设置',
-                        v: 'dialog-subject-settings',
-                        r: this.r('d_settings')
+                        dialogName: '设置',
+                        uniQueKey: 'dialog-subject-settings',
+                        returnPath: this.r('d_settings')
                     }
                 );
-            },
-            async system(channel) {
-                if (channel !== 'closed') this.$ipcRenderer.send(channel);
-                else {
-                    this.$parent.$parent.dialogInit(
-                        {
-                            name: '提示',
-                            v: 'dialog-subject-exitprompt',
-                            r: this.r('d_settings')
-                        }
-                    );
-                }
             }
         },
         watch: {

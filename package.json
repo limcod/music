@@ -11,8 +11,7 @@
     "retrieval": "npx gulp retrieval",
     "gulp": "npx gulp retrieval && npx gulp compress && npx gulp compiler",
     "start": "electron src/lib/main.js",
-    "build": "electron-builder",
-    "build w": "electron-builder -w"
+    "build": "electron-builder"
   },
   "build": {
     "compression": "maximum",
@@ -78,9 +77,9 @@
     }
   },
   "devDependencies": {
-    "electron": "^9.2.1",
+    "electron": "^10.0.0",
     "electron-builder": "^22.8.0",
-    "google-closure-compiler": "^20200517.0.0",
+    "google-closure-compiler": "^20200719.0.0",
     "gulp": "^4.0.2",
     "gulp-htmlmin": "^5.0.1",
     "gulp-minify-css": "^1.2.4",

@@ -2,6 +2,7 @@
 const {resolve} = require('path');
 const {existsSync, readdirSync, statSync, unlinkSync, rmdirSync} = require('fs');
 const {shell, app, BrowserWindow, globalShortcut, ipcMain, screen, Tray} = require('electron');
+const log = require('./util/log');
 const config = require('./static/cfg/config.json');
 
 class main {
@@ -13,7 +14,7 @@ class main {
     constructor() {
         this.win = null; //主窗口
         this.dialogs = []; //弹框组
-        this.is_Dialogs = []; //弹框组状态
+        this.isDialogs = []; //弹框组状态
         this.appTray = null;//托盘
         this.menu = null; //托盘窗口
     }
@@ -37,9 +38,6 @@ class main {
         }
     }
 
-    /**
-     * 窗口参数
-     * */
     browserWindowOpt(wh) {
         return {
             width: wh[0],
@@ -52,15 +50,13 @@ class main {
             show: false,
             webPreferences: {
                 nodeIntegration: true,
+                enableRemoteModule: true,
                 devTools: !app.isPackaged,
                 webSecurity: false
             }
         }
     }
 
-    /**
-     * 创建主窗口
-     * */
     async createWindow() {
         this.win = new BrowserWindow(this.browserWindowOpt(config.appSize));
         //加载完毕后显示
@@ -82,9 +78,6 @@ class main {
         await this.win.loadFile(resolve(__dirname, '../index.html'));
     }
 
-    /**
-     * 创建主托盘
-     * */
     async createTray() {
         this.appTray = new Tray(resolve(__dirname, './static/icon/icon.ico'));
         this.appTray.setToolTip(app.name);
@@ -130,13 +123,10 @@ class main {
         })
     }
 
-    /**
-     * 创建弹框
-     * */
     async createDialog(args) {
         let id = this.dialogs.length;
         for (let i of this.dialogs) {
-            if (i && i.uniquekey === args.v && !i.complex) {
+            if (i && i.uniQueKey === args.uniQueKey && !i.isComplex) {
                 i.focus();
                 return;
             }
@@ -155,8 +145,8 @@ class main {
         opt.modal = args.modal;
         opt.resizable = args.resizable;
         this.dialogs[id] = new BrowserWindow(opt);
-        this.dialogs[id].uniquekey = args.v;
-        this.dialogs[id].complex = args.complex;
+        this.dialogs[id].uniQueKey = args.uniQueKey;
+        this.dialogs[id].isComplex = args.isComplex;
         //window加载完毕后显示
         this.dialogs[id].once('ready-to-show', () => this.dialogs[id].show());
         //window被关闭，这个事件会被触发。
@@ -177,12 +167,9 @@ class main {
             })));
         });
         await this.dialogs[id].loadFile(resolve(__dirname, '../index.html'));
-        this.is_Dialogs[id] = true;
+        this.isDialogs[id] = true;
     }
 
-    /**
-     * 初始化加载
-     * */
     async init() {
         app.allowRendererProcessReuse = true;
         if (!app.requestSingleInstanceLock()) {
@@ -228,9 +215,6 @@ class main {
         app.setAsDefaultProtocolClient(app.name, process.execPath, args);
     }
 
-    /**
-     * 渲染进程通讯
-     * */
     async ipc() {
         /**
          * 主体
@@ -239,7 +223,7 @@ class main {
         ipcMain.on('closed', (event, args) => {
             for (let i of this.dialogs) if (i) i.close();
             this.dialogs = [];
-            this.is_Dialogs = [];
+            this.isDialogs = [];
             if (this.menu) this.menu.close();
             this.win.close();
         });
@@ -286,26 +270,19 @@ class main {
         });
         //关闭
         ipcMain.on('newWin-closed', (event, id) => {
-            this.is_Dialogs[id] = false;
+            this.isDialogs[id] = false;
             this.dialogs[id].close();
             delete this.dialogs[id];
             let is = true;
-            for (let i = 0, len = this.is_Dialogs.length; i < len; i++) if (this.is_Dialogs[i]) is = false;
+            for (let i = 0, len = this.isDialogs.length; i < len; i++) if (this.isDialogs[i]) is = false;
             if (is) {
                 this.dialogs = [];
-                this.is_Dialogs = [];
+                this.isDialogs = [];
             }
         });
         //最小化
         ipcMain.on('newWin-mini', (event, id) => {
             this.dialogs[id].minimize();
-        });
-
-        /**
-         * global
-         * */
-        ipcMain.on('global', (event, args) => {
-            return this[args]
         });
     }
 
