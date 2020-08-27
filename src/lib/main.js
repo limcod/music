@@ -2,7 +2,7 @@
 const {resolve} = require('path');
 const {existsSync, readdirSync, statSync, unlinkSync, rmdirSync} = require('fs');
 const {shell, app, BrowserWindow, globalShortcut, ipcMain, screen, Tray} = require('electron');
-const config = require('./cfg/config.json');
+const config = require('./static/cfg/config.json');
 
 class main {
     static getInstance() {
@@ -311,4 +311,7 @@ class main {
 
 }
 
-module.exports = main.getInstance();
+(async () => {
+    await main.getInstance().init(); //初始化
+    await main.getInstance().ipc(); //开启ipc通讯
+})()

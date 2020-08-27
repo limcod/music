@@ -75,7 +75,7 @@ gulp.task('retrieval', async () => {
         }
     }
     nConf.views = views;
-    fs.writeFileSync(__dirname + '/src/lib/cfg/config.json', JSON.stringify(nConf, null, 2));
+    fs.writeFileSync(__dirname + '/src/lib/static/cfg/config.json', JSON.stringify(nConf, null, 2));
 
     config.build.asar = asar;
     config.build.nsis.allowToChangeInstallationDirectory = allowToChangeInstallationDirectory;

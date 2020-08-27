@@ -3,16 +3,14 @@
   "productName": "music",
   "version": "0.1.0",
   "description": "music",
-  "main": "dist/lib/index.js",
+  "main": "dist/lib/main.js",
   "private": true,
   "author": "youliso@Hotmail.com",
   "license": "MIT",
   "scripts": {
-    "update": "npx npm update",
     "retrieval": "npx gulp retrieval",
-    "start src": "electron src/lib/index.js",
-    "start dist": "electron  dist/lib/index.js",
     "gulp": "npx gulp retrieval && npx gulp compress && npx gulp compiler",
+    "start": "electron src/lib/main.js",
     "build": "electron-builder",
     "build w": "electron-builder -w"
   },
