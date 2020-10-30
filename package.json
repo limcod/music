@@ -1,8 +1,8 @@
 {
-  "name": "electrontemplate",
-  "productName": "electrontemplate",
+  "name": "Ting",
+  "productName": "Ting",
   "version": "0.1.0",
-  "description": "electron template",
+  "description": "Ting 音乐播放器",
   "main": "dist/main.bundle.js",
   "private": true,
   "author": "youliso@Hotmail.com",

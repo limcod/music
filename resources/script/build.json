@@ -1,7 +1,7 @@
 {
   "compression": "maximum",
-  "productName": "electrontemplate",
-  "appId": "org.electrontemplate",
+  "productName": "Ting",
+  "appId": "org.Ting",
   "copyright": "MIT",
   "asar": true,
   "directories": {
@@ -30,7 +30,7 @@
     "uninstallerSidebar": "resources/icons/modern-wizard.bmp",
     "createDesktopShortcut": true,
     "createStartMenuShortcut": true,
-    "shortcutName": "electrontemplate",
+    "shortcutName": "Ting",
     "include": "resources/script/installer.nsh"
   },
   "dmg": {

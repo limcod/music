@@ -3,34 +3,34 @@
     <div class="audio-info-but">
       <button class="button">◀</button>
       <button class="button"
-              @click="paused===0?play():pause()">{{paused === 0 ? '▶' : '||'}}
+              @click="AudiosOpt.paused===0?play():pause()">{{AudiosOpt.paused === 0 ? '▶' : '||'}}
       </button>
       <button class="button">▶</button>
     </div>
     <div class="audio-info-progress">
       <div>
-        {{isProgress === 1 ? audio.showTime(Number(speedProgress)) : audio.showTime(ingTime)}}
+        {{isProgress === 1 ? audio.showTime(Number(speedProgress)) : audio.showTime(AudiosOpt.ingTime)}}
       </div>
       <input type="range" class="audio-info-progress-input"
-             :max="allTime.toFixed(0)"
+             :max="AudiosOpt.allTime.toFixed(0)"
              min="0"
              step="any"
              @input="speedProgress=$event.target.value"
              @mousedown="isProgress=1"
-             @mouseup="paused===0?audio.currentIngTime(speedProgress):audio.currentTime(speedProgress);oProgress()"
-             :value="isProgress===1?speedProgress:ingTime"/>
-      <div>{{audio.showTime(allTime)}}</div>
+             @mouseup="AudiosOpt.paused===0?audio.currentIngTime(speedProgress):audio.currentTime(speedProgress);oProgress()"
+             :value="isProgress===1?speedProgress:AudiosOpt.ingTime"/>
+      <div>{{audio.showTime(AudiosOpt.allTime)}}</div>
     </div>
     <div class="audio-info-volume">
       <input class="audio-info-volume-input" type="range" max="100" min="0" step="1"
-             :value="parseInt((volume * 100).toString())" @input="audio.setVolume($event.target.value)"/>
-      <div>{{parseInt((volume * 100).toString())}}</div>
+             :value="parseInt((AudiosOpt.volume * 100).toString())" @input="audio.setVolume($event.target.value)"/>
+      <div>{{parseInt((AudiosOpt.volume * 100).toString())}}</div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, toRefs, ref} from "vue";
+import {defineComponent, ref} from "vue";
 import {AudiosOpt, audio} from "../../utils/audio";
 
 export default defineComponent({
@@ -55,7 +55,7 @@ export default defineComponent({
     }
 
     return {
-      ...toRefs(AudiosOpt),
+      AudiosOpt,
       audio,
       isProgress,
       speedProgress,
@@ -74,6 +74,9 @@ export default defineComponent({
   width: 100%;
   display: flex;
   align-items: center;
+  backdrop-filter: blur(4px);
+  background-color: rgba(0,0,0,.5);
+  transition: all .5s ease-in-out;
 }
 
 .audio-info-but {

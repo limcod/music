@@ -7,7 +7,9 @@ export const AudiosOpt = reactive({
     cachedType: 0, //缓存进度 0-1  1为完成
     cachedTime: 0, //已缓存时长
     ingTime: 0, //当前播放时长
-    allTime: 0 //当前歌曲总时长
+    allTime: 0, //当前歌曲总时长
+    key: '', //当前播放的歌曲
+    musicInfo: null, //当前播放的歌曲信息
 });
 
 class Audios {
@@ -16,7 +18,6 @@ class Audios {
     private currentAudio: HTMLAudioElement = null; //当前播放音源
     private sourceAudio: MediaElementAudioSourceNode = null; //音频的源
     private gainNode: GainNode = null; //音量控制节点
-    private currentPath: string = null; //当前播放的歌曲链接
 
     static getInstance() {
         if (!Audios.instance) Audios.instance = new Audios();
@@ -37,7 +38,7 @@ class Audios {
         AudiosOpt.allTime = 0;
     }
 
-    async play(path?: string) {
+    async play(key?: string, item?: any, path?: string) {
         return new Promise(async (resolve, reject) => {
             if (!path && this.currentAudio) {
                 if (AudiosOpt.paused === 0) await this.currentAudio.play();//播放
@@ -45,13 +46,16 @@ class Audios {
                 return;
             }
             if (path) {
-                if (path === this.currentPath) return;
+                if (key === AudiosOpt.key) {
+                    if (AudiosOpt.paused === 0) await this.currentAudio.play();//播放
+                    resolve(0);
+                    return;
+                }
                 if (this.currentAudio) {
                     await this.pause();
                     this.clear();
                 }
                 this.currentAudio = new Audio(path);
-                this.currentPath = path;
                 this.currentAudio.crossOrigin = "anonymous"; //音源跨域
                 this.sourceAudio = this.AudioContext.createMediaElementSource(this.currentAudio);
                 this.gainNode = this.AudioContext.createGain();
@@ -60,6 +64,8 @@ class Audios {
 
                 this.currentAudio.oncanplay = (ev) => { //可以开始播放
                     this.currentAudio.play();//播放
+                    AudiosOpt.key = key;
+                    AudiosOpt.musicInfo = item;
                 }
 
                 this.currentAudio.oncanplaythrough = (ev) => { //当前歌曲缓存完毕
@@ -71,7 +77,7 @@ class Audios {
                 }
 
                 this.currentAudio.onplay = (ev) => {//开始播放
-                    console.log('开始播放')
+                    console.log('开始播放');
                     this.gainNode.gain.value = 0;//设置音量为0
                     this.currentTime(AudiosOpt.ingTime);//设置当前播放位置
                     this.gainNode.gain.linearRampToValueAtTime(AudiosOpt.volume, this.AudioContext.currentTime + AudiosOpt.volumeGradualTime); //音量淡入

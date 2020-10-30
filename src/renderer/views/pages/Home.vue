@@ -2,15 +2,17 @@
   <div class="main">
     <Head></Head>
     <div class="info">
-      <div :ref="listDom" class="list no-drag">
+      <div class="list no-drag">
         <div v-for="(item) in topList"
-             class="bg-img cursor-pointer"
+             class="item bg-img cursor-pointer"
+             :class="{'act':`${item.vendor}|${item.id}`===AudiosOpt.key}"
              :style="{'background-image': `url('${item?.album?.cover}?param=250y120')`}"
              @click="play(item)">
           {{item.name}} {{item.vendor}}
         </div>
       </div>
-      <div class="audio">
+      <div class="audio bg-img"
+           :style="{'background-image': `url('${AudiosOpt.musicInfo?.album?.cover}?param=790y50')`}">
         <Audio></Audio>
       </div>
     </div>
@@ -23,7 +25,7 @@ import Head from "../components/Head.vue";
 import Audio from "../components/Audio.vue";
 import {argsState} from "../../store";
 import {getSongUrl, getTopList} from "../../utils/music";
-import {audio} from "../../utils/audio";
+import {AudiosOpt, audio} from "../../utils/audio";
 
 export default defineComponent({
   components: {
@@ -44,22 +46,15 @@ export default defineComponent({
       data["topList"] = data["topListData"].list;
     });
 
-    function listDom(el) {
-      el.onscroll = () => {
-        if (el.scrollTop + el.clientHeight === el.scrollHeight) {
-          console.log("到底了");
-        }
-      }
-    }
-
-    async function play(item) {
+    async function play(item: any) {
       let req = await getSongUrl(item.vendor, item.id);
-      await audio.play(req.url);
+      console.log(req)
+      await audio.play(`${item.vendor}|${item.id}`, item, req.url);
     }
 
     return {
+      AudiosOpt,
       ...toRefs(data),
-      listDom,
       play
     }
   }
@@ -70,7 +65,7 @@ export default defineComponent({
 .info {
   width: 100%;
   height: 100%;
-  padding: 25px 10px 60px;
+  padding: 25px 10px 10px;
   position: relative;
 
   .list {
@@ -82,6 +77,11 @@ export default defineComponent({
     height: 100%;
     overflow: hidden;
     overflow-y: scroll;
+
+    .item.act {
+      color: red;
+    }
+
   }
 
   .audio {

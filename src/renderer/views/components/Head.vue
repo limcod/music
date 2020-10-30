@@ -3,6 +3,9 @@
     <div class="title">
       Ting
     </div>
+    <div>
+
+    </div>
     <div class="events">
       <div @click="close" class="event close no-drag cursor-pointer"></div>
     </div>
