@@ -41,7 +41,7 @@ export default defineComponent({
     const speedProgress = ref(0); //拖动进度结果
 
     async function play() {
-      await audio.play('http://music.163.com/song/media/outer/url?id=504924216.mp3');
+      await audio.play();
     }
 
     async function pause() {

@@ -2,7 +2,14 @@
   <div class="main">
     <Head></Head>
     <div class="info">
-
+      <div :ref="listDom" class="list no-drag">
+        <div v-for="(item) in topList"
+             class="bg-img cursor-pointer"
+             :style="{'background-image': `url('${item?.album?.cover}?param=250y120')`}"
+             @click="play(item)">
+          {{item.name}} {{item.vendor}}
+        </div>
+      </div>
       <div class="audio">
         <Audio></Audio>
       </div>
@@ -11,12 +18,12 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onUnmounted, watch} from "vue";
-import {createWindow} from "../../utils/ipc";
-import {useRouter} from "vue-router";
+import {defineComponent, onMounted, reactive, toRefs} from "vue";
 import Head from "../components/Head.vue";
 import Audio from "../components/Audio.vue";
-import {argsState, messageData} from "../../store";
+import {argsState} from "../../store";
+import {getSongUrl, getTopList} from "../../utils/music";
+import {audio} from "../../utils/audio";
 
 export default defineComponent({
   components: {
@@ -26,27 +33,34 @@ export default defineComponent({
   name: "Home",
   setup() {
     const args = argsState();
-    const router = useRouter();
-
-    let watchTest = watch(() => messageData["test"], (n, o) => { // o 为新赋值 n为旧值
-      console.log(n, o)
+    const data = reactive({
+      topListData: null,
+      topList: [],
+      topListIndex: 10
     });
-    const test = () => {
-      createWindow({
-        route: "/message",
-        parentId: args.id,
-        data: {text: "key不能为空"},
-      });
+
+    onMounted(async () => {
+      data["topListData"] = await getTopList();
+      data["topList"] = data["topListData"].list;
+    });
+
+    function listDom(el) {
+      el.onscroll = () => {
+        if (el.scrollTop + el.clientHeight === el.scrollHeight) {
+          console.log("到底了");
+        }
+      }
     }
-    const toAbout = () => {
-      router.replace("/about");
+
+    async function play(item) {
+      let req = await getSongUrl(item.vendor, item.id);
+      await audio.play(req.url);
     }
-    onUnmounted(() => {
-      watchTest()
-    })
+
     return {
-      test,
-      toAbout
+      ...toRefs(data),
+      listDom,
+      play
     }
   }
 });
@@ -56,10 +70,21 @@ export default defineComponent({
 .info {
   width: 100%;
   height: 100%;
-  padding: 25px 10px 10px;
+  padding: 25px 10px 60px;
   position: relative;
 
-  .audio{
+  .list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 120px;
+    grid-gap: 10px 10px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    overflow-y: scroll;
+  }
+
+  .audio {
     position: absolute;
     bottom: 0;
     left: 0;

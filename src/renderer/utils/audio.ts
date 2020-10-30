@@ -16,6 +16,7 @@ class Audios {
     private currentAudio: HTMLAudioElement = null; //当前播放音源
     private sourceAudio: MediaElementAudioSourceNode = null; //音频的源
     private gainNode: GainNode = null; //音量控制节点
+    private currentPath: string = null; //当前播放的歌曲链接
 
     static getInstance() {
         if (!Audios.instance) Audios.instance = new Audios();
@@ -36,15 +37,21 @@ class Audios {
         AudiosOpt.allTime = 0;
     }
 
-    async play(path: string) {
-        return new Promise((resolve, reject) => {
-            if (this.currentAudio) {
-                if (AudiosOpt.paused === 0) this.currentAudio.play();//播放
+    async play(path?: string) {
+        return new Promise(async (resolve, reject) => {
+            if (!path && this.currentAudio) {
+                if (AudiosOpt.paused === 0) await this.currentAudio.play();//播放
                 resolve(0);
                 return;
             }
             if (path) {
+                if (path === this.currentPath) return;
+                if (this.currentAudio) {
+                    await this.pause();
+                    this.clear();
+                }
                 this.currentAudio = new Audio(path);
+                this.currentPath = path;
                 this.currentAudio.crossOrigin = "anonymous"; //音源跨域
                 this.sourceAudio = this.AudioContext.createMediaElementSource(this.currentAudio);
                 this.gainNode = this.AudioContext.createGain();
@@ -128,7 +135,7 @@ class Audios {
 
     //缓存
     cached() {
-        if (this.currentAudio) {
+        if (this.currentAudio && this.currentAudio.buffered.length > 0) {
             AudiosOpt.cachedTime = this.currentAudio.buffered.end(this.currentAudio.buffered.length - 1); //已缓存时长
             AudiosOpt.cachedType = this.currentAudio.buffered.end(this.currentAudio.buffered.length - 1) / this.currentAudio.duration; //缓存进度  0-1
         }

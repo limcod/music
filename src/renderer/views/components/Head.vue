@@ -1,7 +1,7 @@
 <template>
   <div class="head">
     <div class="title">
-      标题
+      Ting
     </div>
     <div class="events">
       <div @click="close" class="event close no-drag cursor-pointer"></div>
