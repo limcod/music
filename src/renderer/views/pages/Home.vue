@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="audio bg-img"
-           :style="{'background-image': `url('${AudiosOpt.musicInfo?.album?.cover}?param=790y50')`}">
+           :style="AudiosOpt.musicInfo?{'background-image': `url('${AudiosOpt.musicInfo?.album?.cover}?param=790y50')`}:{}">
         <Audio></Audio>
       </div>
     </div>
@@ -24,7 +24,7 @@ import {defineComponent, onMounted, reactive, toRefs} from "vue";
 import Head from "../components/Head.vue";
 import Audio from "../components/Audio.vue";
 import {argsState} from "../../store";
-import {getSongUrl, getTopList} from "../../utils/music";
+import {getSongUrl, getTopList, searchSong} from "../../utils/music";
 import {AudiosOpt, audio} from "../../utils/audio";
 
 export default defineComponent({
