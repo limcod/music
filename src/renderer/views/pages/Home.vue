@@ -36,14 +36,14 @@ export default defineComponent({
   setup() {
     const args = argsState();
     const data = reactive({
-      topListData: null,
       topList: [],
       topListIndex: 10
     });
+    let topListData = null;
 
     onMounted(async () => {
-      data["topListData"] = await getTopList();
-      data["topList"] = data["topListData"].list;
+      topListData = await getTopList();
+      data["topList"] = topListData.list;
     });
 
     async function play(item: any) {

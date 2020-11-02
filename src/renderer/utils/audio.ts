@@ -8,7 +8,7 @@ export const AudiosOpt = reactive({
     cachedTime: 0, //已缓存时长
     ingTime: 0, //当前播放时长
     allTime: 0, //当前歌曲总时长
-    key: '', //当前播放的歌曲
+    key: "", //当前播放的歌曲
     musicInfo: null, //当前播放的歌曲信息
 });
 
@@ -36,6 +36,8 @@ class Audios {
         AudiosOpt.cachedTime = 0;
         AudiosOpt.ingTime = 0;
         AudiosOpt.allTime = 0;
+        AudiosOpt.key = "";
+        AudiosOpt.musicInfo = null;
     }
 
     async play(key?: string, item?: any, path?: string) {
