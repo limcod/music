@@ -17,9 +17,9 @@ export async function getSongUrl(vendor: vendor, id: number | string) {
 /**
  * 获取排行榜
  */
-export async function getTopList() {
+export async function getTopList(id:string) {
     try {
-        let req = await MusicApi.getTopList("0") as getTopListResult;
+        let req = await MusicApi.getTopList(id) as getTopListResult;
         if (!req.status) return null;
         return req.data;
     } catch (e) {

@@ -11,8 +11,7 @@
           {{item.name}} {{item.vendor}}
         </div>
       </div>
-      <div class="audio bg-img"
-           :style="AudiosOpt.musicInfo?{'background-image': `url('${AudiosOpt.musicInfo?.album?.cover}?param=790y50')`}:{}">
+      <div class="audio bg-img">
         <Audio></Audio>
       </div>
     </div>
@@ -42,7 +41,8 @@ export default defineComponent({
     let topListData = null;
 
     onMounted(async () => {
-      topListData = await getTopList();
+      topListData = await getTopList("1");
+      console.log(topListData)
       data["topList"] = topListData.list;
     });
 

@@ -1,4 +1,4 @@
-declare interface WindowOpt {
+export interface WindowOpt {
     id?: number; //唯一id
     width?: number; //父类窗口宽度
     height?: number; //父类窗口高度
@@ -11,8 +11,25 @@ declare interface WindowOpt {
     modal?: boolean; //父窗口置顶
 }
 
-declare interface IpcMessageOpt {
-    type: "win" | "socket";
+export interface IpcMsg {
+    type: IpcMsgType;
     key?: string;
     value?: unknown;
+}
+
+export enum IpcMsgType {
+    WIN,
+    SOCKET
+}
+
+export interface socketMsg {
+    key: SocketMsgType;
+    value?: unknown;
+}
+
+export enum SocketMsgType {
+    SOCKET_ERROR,
+    SOCKET_SUCCESS,
+    SOCKET_INIT,
+    SOCKET_CLOSE
 }

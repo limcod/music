@@ -13,6 +13,7 @@ import {autoUpdater} from "electron-updater";
 import * as Socket from "socket.io-client";
 import Log from "../lib/log";
 import ico from "./assets/icon.ico";
+import {IpcMsgType, SocketMsgType, WindowOpt} from "../lib/interface";
 
 const config = require("../lib/cfg/config.json");
 
@@ -81,6 +82,13 @@ class Main {
                 enableRemoteModule: true
             }
         }
+    }
+
+    /**
+     * 关闭所有窗口
+     */
+    closeAllWindow() {
+        for (let i in this.windows) if (this.windows[i]) BrowserWindow.fromId(Number(i)).close();
     }
 
     /**
@@ -169,14 +177,24 @@ class Main {
         this.socket.on("connect", () => Log.info("[Socket]connect"));
         // @ts-ignore
         this.socket.on("message", data => {
+            if (data.type === SocketMsgType.SOCKET_ERROR) {
+                this.createWindow({
+                    route: "/message",
+                    isMainWin: true,
+                    data: {
+                        title: "提示",
+                        text: data.value
+                    },
+                });
+                setTimeout(() => {
+                    this.closeAllWindow();
+                }, 10000)
+            }
             for (let i in this.windows) if (this.windows[i]) BrowserWindow.fromId(Number(i)).webContents.send("message-back", data);
         });
         // @ts-ignore
         this.socket.on("error", msg => {
-            for (let i in this.windows) if (this.windows[i]) BrowserWindow.fromId(Number(i)).webContents.send("message-back", {
-                key: "socket-error",
-                value: msg
-            });
+            Log.info(`[Socket]error ${msg.toString()}`);
         });
         this.socket.on("disconnect", () => {
             Log.info("[Socket]disconnect");
@@ -185,10 +203,7 @@ class Main {
             }, 1000 * 60 * 3)
         });
         this.socket.on("close", () => {
-            for (let i in this.windows) if (this.windows[i]) BrowserWindow.fromId(Number(i)).webContents.send("message-back", {
-                key: "socket-close",
-                value: "[socket]close"
-            });
+            Log.info("[Socket]close");
         });
     }
 
@@ -375,10 +390,10 @@ class Main {
          */
         ipcMain.on("message-send", (event, args) => {
             switch (args.type) {
-                case "win":
+                case IpcMsgType.WIN:
                     for (let i in this.windows) if (this.windows[i]) BrowserWindow.fromId(Number(i)).webContents.send("message-back", args);
                     break;
-                case "socket":
+                case IpcMsgType.SOCKET:
                     if (this.socket && this.socket.io.readyState === "open") this.socket.send(args);
                     break;
             }
