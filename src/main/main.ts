@@ -76,6 +76,7 @@ class Main {
             frame: false,
             show: false,
             webPreferences: {
+                contextIsolation: false,
                 nodeIntegration: true,
                 devTools: !app.isPackaged,
                 webSecurity: false,
