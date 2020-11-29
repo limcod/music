@@ -1,4 +1,5 @@
 const path = require("path");
+const fs = require("fs");
 const webpack = require("webpack");
 const { name } = require("../../package.json");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
@@ -9,7 +10,9 @@ const { VueLoaderPlugin } = require("vue-loader");
 
 const isEnvProduction = process.env.NODE_ENV === "production";
 const isEnvDevelopment = process.env.NODE_ENV === "development";
-module.exports = {
+
+
+const config = {
     devtool: isEnvDevelopment ? "source-map" : false,
     mode: isEnvProduction ? "production" : "development",
     target: "electron-renderer",
@@ -96,32 +99,14 @@ module.exports = {
     resolve: {
         extensions: [".ts", ".js", ".vue", ".json"],
         alias: {
-            "vue": "@vue/runtime-dom"
+            "vue": "@vue/runtime-dom",
+            "@": path.resolve("src")
         }
     },
     optimization: {
         minimize: true
     },
     plugins: [
-        new CopyWebpackPlugin({
-            patterns:
-                [
-                    {
-                        from: "./src/lib/**/*",
-                        to: "./lib",
-                        transformPath(targetPath, absolutePath) {
-                            let path = targetPath.replace(/\\/g, "/");
-                            return path.replace("src/lib", "");
-                        },
-                        globOptions: {
-                            ignore: [
-                                "**/*.ts",
-                                "**/*.json"
-                            ]
-                        }
-                    }
-                ]
-        }),
         new miniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output
             // both options are optional
@@ -135,9 +120,35 @@ module.exports = {
         new VueLoaderPlugin(),
         new webpack.DefinePlugin({
             "process.env": {
-                NODE_ENV: JSON.stringify("production")
+                NODE_ENV: JSON.stringify(isEnvProduction ? "production" : "development")
             },
             "__VUE_PROD_DEVTOOLS__": JSON.stringify(false)
         })
     ]
 };
+
+try {
+    if (fs.statSync(path.join(__dirname, "../../src/lib/extern"))) {
+        config.plugins.unshift(new CopyWebpackPlugin({
+            patterns:
+                [
+                    {
+                        from: "./src/lib/extern/**/*",
+                        to: "./lib/extern",
+                        transformPath(targetPath, absolutePath) {
+                            try {
+                                let path = targetPath.replace(/\\/g, "/");
+                                return path.replace("src/lib/extern", "");
+                            } catch (e) {
+                                return false;
+                            }
+                        }
+                    }
+                ]
+        }));
+    }
+} catch (e) {
+    console.log("... 无外部引入依赖 ...");
+}
+
+module.exports = config;

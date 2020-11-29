@@ -1,4 +1,10 @@
-import MusicApi, {getSongUrlResult, getTopListResult, vendor} from '@suen/music-api'
+import MusicApi, {
+    errorResult,
+    getSongUrlResult,
+    getTopListResult,
+    musicApiSearchSongResult,
+    vendor
+} from '@suen/music-api'
 import Log from "../../lib/log";
 
 /**
@@ -17,7 +23,7 @@ export async function getSongUrl(vendor: vendor, id: number | string) {
 /**
  * 获取排行榜
  */
-export async function getTopList(id:string) {
+export async function getTopList(id: string) {
     try {
         let req = await MusicApi.getTopList(id) as getTopListResult;
         if (!req.status) return null;
@@ -32,7 +38,7 @@ export async function getTopList(id:string) {
  * 搜索
  * @param key 关键字
  */
-export async function searchSong(key: string) {
+export async function searchSong(key: string): Promise<musicApiSearchSongResult | errorResult> {
     try {
         return await MusicApi.searchSong(key);
     } catch (e) {
