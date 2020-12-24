@@ -10,7 +10,7 @@
         <div v-for="(item) in topList"
              class="item bg-img cursor-pointer"
              :class="{'act':`${item.vendor}|${item.id}`===AudiosOpt.key}"
-             :style="{'background-image': `url('${item?.album?.cover}?param=250y120')`}"
+             :style="{'background-image': `url('${item?.album?.cover.replace('httpss','https')}${item.vendor==='netease'?'?param=250y120':''}')`}"
              @click="play(item)">
           {{ item.name }} {{ item.vendor }}
         </div>
@@ -27,8 +27,8 @@ import {defineComponent, onMounted, reactive, toRefs} from "vue";
 import Head from "../components/Head.vue";
 import Audio from "../components/Audio.vue";
 import {argsState} from "../../store";
-import {getSongUrl, getTopList, searchSong} from "../../utils/music";
-import {AudiosOpt, audio} from "../../utils/audio";
+import {getSongUrl, getTopList, searchSong} from "@/lib/music";
+import {AudiosOpt, audio} from "@/lib/audio";
 
 export default defineComponent({
   components: {
@@ -52,7 +52,7 @@ export default defineComponent({
     });
 
     async function play(item: any) {
-      console.log(item.vendor,item.id)
+      console.log(item.vendor, item.id)
       let req = await getSongUrl(item.vendor, item.id);
       await audio.play(`${item.vendor}|${item.id}`, item, req.url);
     }

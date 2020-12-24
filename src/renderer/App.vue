@@ -9,13 +9,11 @@
 import {toRefs} from "vue";
 import {useRouter} from "vue-router";
 import {argsState, keepAliveOpt} from "./store";
-import {setBounds} from "./utils/ipc";
 
 export default {
   setup() {
     const args = argsState();
-    if (args) useRouter().replace(args.route);
-    if (args.id === 1) setBounds([800, 500], true);
+    if (args.route) useRouter().replace(args.route);
     return {...toRefs(keepAliveOpt)};
   }
 }

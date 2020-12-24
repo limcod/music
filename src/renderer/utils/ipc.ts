@@ -1,19 +1,26 @@
 import {ipcRenderer, remote} from "electron";
-import {addMessageData} from "../store";
+import {setMessageData} from "../store";
 import {IpcMsg, WindowOpt} from "@/lib/interface";
 
 /**
  * 渲染进程初始化 (i)
  * */
 export async function Init() {
-    ipcRenderer.on("message-back", (event, args: IpcMsg) => addMessageData(args.key, args.value)); //消息反馈 (i)
+    messageBack();
     return new Promise(resolve => ipcRenderer.once("window-load", async (event, args) => resolve(args)))
+}
+
+/**
+ * 消息反馈
+ */
+export function messageBack() {
+    ipcRenderer.on("message-back", (event, args) => setMessageData(args.key, args.value));
 }
 
 /**
  * 消息发送
  */
-export function send(args: IpcMsg) {
+export function messageSend(args: IpcMsg) {
     ipcRenderer.send("message-send", args);
 }
 
@@ -30,8 +37,7 @@ export function setBounds(size: number[], center?: boolean) {
         };
         if (Rectangle.width === remote.getCurrentWindow().getBounds().width &&
             Rectangle.height === remote.getCurrentWindow().getBounds().height) {
-            resolve(0);
-            return;
+            return resolve(0);
         }
         remote.getCurrentWindow().once("resize", () => {
             if (center) remote.getCurrentWindow().center();
@@ -46,8 +52,10 @@ export function setBounds(size: number[], center?: boolean) {
  */
 export function createWindow(data: WindowOpt) {
     let args: WindowOpt = {
-        width: data.width || remote.getCurrentWindow().getBounds().width,
-        height: data.height || remote.getCurrentWindow().getBounds().height,
+        currentWidth: remote.getCurrentWindow().getBounds().width,
+        currentHeight: remote.getCurrentWindow().getBounds().height,
+        width: data.width || null,
+        height: data.height || null,
         route: data.route, // 页面路由
         resizable: false,// 是否支持调整窗口大小
         data: data.data, //数据
@@ -71,20 +79,6 @@ export function closeWindow(id?: number) {
 }
 
 /**
- * socket 初始化
- */
-export function socketInit() {
-    ipcRenderer.send("socket-init");
-}
-
-/**
- * socket 重连
- */
-export function socketReconnection() {
-    ipcRenderer.send("socket-reconnection");
-}
-
-/**
  * 设置全局参数
  */
 export function sendGlobal(key: string, value: unknown) {
@@ -98,5 +92,46 @@ export function getGlobal(key: string) {
     return remote.getGlobal("sharedObject")[key];
 }
 
+/**
+ * socket 打开 (注: 只需调用一次,多次调用会造成socket模块多次监听)
+ */
+export function socketOpen() {
+    ipcRenderer.send("socket-open");
+}
 
+/**
+ * socket 重连
+ */
+export function socketReconnection() {
+    ipcRenderer.send("socket-reconnection");
+}
 
+/**
+ * socket 关闭
+ */
+export function socketClose() {
+    ipcRenderer.send("socket-close");
+}
+
+/**
+ * 检查更新 (注: 只需调用一次,多次调用会造成更新模块多次监听)
+ */
+export function updateCheck() {
+    ipcRenderer.send("update-check");
+}
+
+/**
+ * 重新检查更新
+ * @param isDel 是否删除历史更新缓存
+ */
+export function updateReCheck(isDel: boolean) {
+    ipcRenderer.send("update-recheck", isDel);
+}
+
+/**
+ * 关闭程序进行更新
+ * @param isSilent 是否静默更新
+ */
+export function updateQuitInstall(isSilent: boolean) {
+    ipcRenderer.send("update-quit-install", isSilent);
+}

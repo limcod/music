@@ -3,9 +3,6 @@
     <div class="title">
       Ting
     </div>
-    <div>
-
-    </div>
     <div class="events">
       <div @click="close" class="event close no-drag cursor-pointer"></div>
     </div>
@@ -14,18 +11,20 @@
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import {argsState} from "../../store";
-import {isNull} from "../../utils/tool";
-import {closeWindow} from "../../utils/ipc";
+import {argsState} from "@/renderer/store";
+import {isNull} from "@/lib";
+import {closeWindow} from "@/renderer/utils/ipc";
 
 export default defineComponent({
   name: "Head",
   setup() {
     const args = argsState();
-    const close = () => {
+
+    function close() {
       if (isNull(args)) closeWindow();
       else closeWindow(args.id);
     }
+
     return {close}
   }
 });

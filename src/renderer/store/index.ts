@@ -1,11 +1,11 @@
 import {reactive, provide, inject} from "vue";
-import {WindowOpt} from "../../lib/interface";
+import {WindowOpt} from "@/lib/interface";
 
 /**
  * 组件页面配置
  * */
 export const keepAliveOpt = reactive({
-    include: ["About"],
+    include: [],
     exclude: [],
     max: 10
 });
@@ -28,19 +28,26 @@ export const delExclude = (key: string) => {
 export const argsSymbol = Symbol("args");
 export const createArgs = (args?: WindowOpt) => reactive(args);
 export const argsState = (): WindowOpt => inject(argsSymbol);
-export const provideArgsState = (args?: WindowOpt) => provide(
-    argsSymbol,
-    createArgs(args)
+
+/**
+ * 创建全局provide
+ * @param key 唯一标识
+ * @param args
+ */
+export const provideState = (key: symbol, args: { [key: string]: unknown }) => provide(
+    key,
+    reactive(args)
 );
+export const getProvideState = (key: symbol) => inject(key);
 
 /**
  * 窗口通信消息内容
  * */
 export const messageData = reactive(<{ [key: string]: unknown }>{});
-export const addMessageData = (key: string, value: unknown) => {
+export const setMessageData = (key: string, value: unknown) => {
     messageData[key] = value;
 };
-export const delMessageData = (key: string) => {
+export const removeMessageData = (key: string) => {
     delete messageData[key];
 };
 

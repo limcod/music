@@ -13,10 +13,10 @@
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import {argsState} from "../../../store";
-import {closeWindow, send, setBounds} from "../../../utils/ipc";
+import {argsState} from "@/renderer/store";
+import {closeWindow, messageSend, setBounds} from "@/renderer/utils/ipc";
 import Head from "../../components/Head.vue";
-import {IpcMsg, IPC_MSG_TYPE} from "../../../../lib/interface";
+import {IpcMsg, IPC_MSG_TYPE} from "@/lib/interface";
 
 export default defineComponent({
   components: {
@@ -27,18 +27,19 @@ export default defineComponent({
     const args = argsState();
     setBounds([400, 150]);
     let cons = 0;
-    const test = () => {//测试发送 为主窗口发送消息
+
+    function test() {//测试发送 为主窗口发送消息
       let data: IpcMsg = {
         type: IPC_MSG_TYPE.WIN,
         key: "test",
         value: cons++
       };
-      send(data);
+      messageSend(data);
     }
 
-    const close = () => {
+    function close() {
       closeWindow(args.id);
-    };
+    }
 
     return {
       args: argsState(),

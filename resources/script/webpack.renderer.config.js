@@ -1,22 +1,14 @@
 const path = require("path");
-const fs = require("fs");
 const webpack = require("webpack");
-const { name } = require("../../package.json");
+const {name} = require("../../package.json");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
-const _externals = require("externals-dependencies");
 const miniCssExtractPlugin = require("mini-css-extract-plugin");
-const { VueLoaderPlugin } = require("vue-loader");
-
+const {VueLoaderPlugin} = require("vue-loader");
 const isEnvProduction = process.env.NODE_ENV === "production";
 const isEnvDevelopment = process.env.NODE_ENV === "development";
-
-
 const config = {
-    devtool: isEnvDevelopment ? "source-map" : false,
     mode: isEnvProduction ? "production" : "development",
     target: "electron-renderer",
-    externals: _externals(),
     entry: {
         app: "./src/renderer/index.ts"
     },
@@ -45,7 +37,7 @@ const config = {
                 test: /\.ts$/,
                 use: {
                     loader: "ts-loader",
-                    options: { appendTsSuffixTo: [/\.vue$/] }
+                    options: {appendTsSuffixTo: [/\.vue$/]}
                 },
                 exclude: /node_modules/
             },
@@ -119,36 +111,10 @@ const config = {
         }),
         new VueLoaderPlugin(),
         new webpack.DefinePlugin({
-            "process.env": {
-                NODE_ENV: JSON.stringify(isEnvProduction ? "production" : "development")
-            },
-            "__VUE_PROD_DEVTOOLS__": JSON.stringify(false)
+            "__VUE_OPTIONS_API__": "false",
+            "__VUE_PROD_DEVTOOLS__": "false"
         })
     ]
 };
-
-try {
-    if (fs.statSync(path.join(__dirname, "../../src/lib/extern"))) {
-        config.plugins.unshift(new CopyWebpackPlugin({
-            patterns:
-                [
-                    {
-                        from: "./src/lib/extern/**/*",
-                        to: "./lib/extern",
-                        transformPath(targetPath, absolutePath) {
-                            try {
-                                let path = targetPath.replace(/\\/g, "/");
-                                return path.replace("src/lib/extern", "");
-                            } catch (e) {
-                                return false;
-                            }
-                        }
-                    }
-                ]
-        }));
-    }
-} catch (e) {
-    console.log("... 无外部引入依赖 ...");
-}
-
+if (isEnvDevelopment) config.devtool = "source-map";
 module.exports = config;

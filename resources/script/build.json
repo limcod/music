@@ -1,7 +1,7 @@
 {
   "compression": "maximum",
-  "productName": "Ting",
-  "appId": "org.Ting",
+  "productName": "ting",
+  "appId": "org.ting",
   "copyright": "MIT",
   "asar": true,
   "directories": {
@@ -10,13 +10,29 @@
   "publish": [
     {
       "provider": "generic",
-      "url": "http://175.24.76.246:3000/"
+      "url": "http://127.0.0.1:3000/"
     }
   ],
   "files": [
     "out/electron/**/*",
     "node_modules/",
-    "dist/"
+    "dist/",
+    {
+      "from": "src/lib/inside",
+      "to": "inside/",
+      "filter": [
+        "**/*"
+      ]
+    }
+  ],
+  "extraResources": [
+    {
+      "from": "src/lib/extern",
+      "to": "extern/",
+      "filter": [
+        "**/*"
+      ]
+    }
   ],
   "nsis": {
     "oneClick": false,
@@ -30,8 +46,10 @@
     "uninstallerSidebar": "resources/icons/modern-wizard.bmp",
     "createDesktopShortcut": true,
     "createStartMenuShortcut": true,
-    "shortcutName": "Ting",
-    "include": "resources/script/installer.nsh"
+    "shortcutName": "ting",
+    "include": "resources/script/installer.nsh",
+    "menuCategory": false,
+    "displayLanguageSelector": false
   },
   "dmg": {
     "contents": [
@@ -53,17 +71,20 @@
   },
   "win": {
     "icon": "resources/icons/icon.ico",
-    "requestedExecutionLevel": "highestAvailable",
+    "requestedExecutionLevel": "asInvoker",
     "target": [
       {
         "target": "nsis",
         "arch": [
-          "x64"
+          "ia32"
         ]
       }
     ]
   },
   "linux": {
-    "icon": "resources/icons"
-  }
+    "icon": "resources/icons",
+    "target": "pacman",
+    "executableName": "ting"
+  },
+  "npmRebuild": true
 }
