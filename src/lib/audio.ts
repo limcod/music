@@ -151,7 +151,7 @@ class Audios {
 
     //显示时间为分钟
     showTime(s: number) {
-        let t: string = s.toFixed(0);
+        let t: string = Number(s).toFixed(0);
         return Math.floor(Number(t) / 60) + ' : ' + Number(t) % 60;
     }
 }
