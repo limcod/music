@@ -5,7 +5,7 @@ import MusicApi, {
     musicApiSearchSongResult,
     vendor
 } from '@suen/music-api'
-import Log from "./log";
+import Log from "../lib/log";
 
 /**
  * 获取歌曲播放链接

@@ -27,8 +27,8 @@ import {defineComponent, onMounted, reactive, toRefs} from "vue";
 import Head from "../components/Head.vue";
 import Audio from "../components/Audio.vue";
 import {argsState} from "../../store";
-import {getSongUrl, getTopList, searchSong} from "@/lib/music";
-import {AudiosOpt, audio} from "@/lib/audio";
+import {getSongUrl, getTopList, searchSong} from "@/core/music";
+import {AudiosOpt, audio} from "@/core/audio";
 
 export default defineComponent({
   components: {

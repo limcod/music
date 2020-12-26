@@ -5,3 +5,6 @@
 /logs/
 /.idea/
 /yarn.lock
+/data/
+/src/assets/logo.png
+/src/assets/logo@2x.png

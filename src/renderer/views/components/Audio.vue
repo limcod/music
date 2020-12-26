@@ -31,7 +31,7 @@
 
 <script lang="ts">
 import {defineComponent, ref} from "vue";
-import {AudiosOpt, audio} from "@/lib/audio";
+import {AudiosOpt, audio} from "@/core/audio";
 
 export default defineComponent({
   name: "Audio",

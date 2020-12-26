@@ -1,13 +1,8 @@
 import {join} from "path";
-import {
-    shell,
-    app,
-    BrowserWindow,
-    BrowserWindowConstructorOptions, Menu, Tray
-} from "electron";
+import {shell, app, BrowserWindow, BrowserWindowConstructorOptions, Menu, Tray} from "electron";
 import Log from "@/lib/log";
 import {WindowOpt} from "@/lib/interface";
-import ico from "@/assets/icon.ico";
+import ico from "@/assets/tray.png";
 
 const config = require("@/lib/cfg/config.json");
 
@@ -45,11 +40,18 @@ export class Window {
 
     /**
      * 获取窗口
-     * @param id
+     * @param id 窗口id
      * @constructor
      */
     getWindow(id: number) {
-        return BrowserWindow.fromId(id)
+        return BrowserWindow.fromId(id);
+    }
+
+    /**
+     * 获取全部窗口
+     */
+    getAllWindows() {
+        return BrowserWindow.getAllWindows();
     }
 
     /**

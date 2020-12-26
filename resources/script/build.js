@@ -28,7 +28,7 @@ let nConf = {
 /** win配置 */
 config.nsis.displayLanguageSelector = false //安装包语言提示
 config.nsis.menuCategory = false; //是否创建开始菜单目录
-config.nsis.shortcutName = name; //快捷方式名称(可中文)
+config.nsis.shortcutName = "Ting"; //快捷方式名称(可中文)
 config.nsis.allowToChangeInstallationDirectory = true;//是否允许用户修改安装为位置
 config.win.requestedExecutionLevel = ["asInvoker", "highestAvailable"][0]; //应用权限
 config.win.target = [];
