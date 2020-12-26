@@ -25,16 +25,14 @@ export interface SongData {
 class Sheet {
     private static instance: Sheet;
     private readonly suffix: string = ".ting"; //歌单后缀名
-    private path: string = "./data"; //歌单路径
+    private path: string = "./data/sheet"; //歌单路径
 
     static getInstance() {
         if (!Sheet.instance) Sheet.instance = new Sheet();
         return Sheet.instance;
     }
 
-    constructor() {
-        findFileBySuffix(this.path, this.suffix);
-    }
+    constructor() {}
 
     /**
      * 获取路径
@@ -78,7 +76,7 @@ class Sheet {
      * 创建歌单
      */
     async create(name: string, data: SheetList) {
-        return await writeFile(this.getPath(name), JSON.stringify(data) + EOL, {encoding: "binary"});
+        return await writeFile(this.getPath(name), Buffer.from(JSON.stringify(data) + EOL).toString("binary"), {encoding: "binary"});
     }
 
     /**

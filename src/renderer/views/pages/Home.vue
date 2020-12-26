@@ -29,6 +29,7 @@ import Audio from "../components/Audio.vue";
 import {argsState} from "../../store";
 import {getSongUrl, getTopList, searchSong} from "@/core/music";
 import {AudiosOpt, audio} from "@/core/audio";
+import {sheet, sheetData} from "@/core/sheet";
 
 export default defineComponent({
   components: {
@@ -67,6 +68,10 @@ export default defineComponent({
         data.topList = list;
       }
     }
+
+    // sheet.list();
+    // sheet.details(sheet.getPath("text")).then(console.log)
+    // sheet.create("text");
 
     return {
       AudiosOpt,
