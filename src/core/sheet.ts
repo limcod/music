@@ -7,6 +7,10 @@ export const sheetData = reactive({
     list: [] //歌单列表
 });
 
+export const songData = reactive({
+    list: [] //播放列表
+})
+
 export interface SheetList {
     name: string; //歌单名称
     cover?: string; //图片地址
@@ -32,7 +36,8 @@ class Sheet {
         return Sheet.instance;
     }
 
-    constructor() {}
+    constructor() {
+    }
 
     /**
      * 获取路径
@@ -66,7 +71,7 @@ class Sheet {
         try {
             let data = await readLine(path) as string[];
             data.shift();
-            return data.map(e => JSON.parse(e));
+            songData.list = data.map(e => JSON.parse(e)) as SongData[];
         } catch (e) {
             Log.error(e);
         }

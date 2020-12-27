@@ -1,4 +1,5 @@
 import {reactive} from "vue";
+import {songData} from "./sheet";
 
 export const AudiosOpt = reactive({
     paused: 0, //音频是否暂停  0暂停 1未暂停
@@ -15,9 +16,9 @@ export const AudiosOpt = reactive({
 class Audios {
     public static instance: Audios;
     private AudioContext: AudioContext = new AudioContext(); //音频api
-    private currentAudio: HTMLAudioElement = null; //当前播放音源
+    private currentAudio: HTMLAudioElement = new Audio(); //当前播放音源
     private sourceAudio: MediaElementAudioSourceNode = null; //音频的源
-    private gainNode: GainNode = null; //音量控制节点
+    private gainNode: GainNode = null; //控制节点
 
     static getInstance() {
         if (!Audios.instance) Audios.instance = new Audios();
@@ -25,12 +26,14 @@ class Audios {
     }
 
     constructor() {
+        this.currentAudio.crossOrigin = "anonymous"; //音源跨域
+        this.gainNode = this.AudioContext.createGain(); //创建控制节点
+        this.sourceAudio = this.AudioContext.createMediaElementSource(this.currentAudio); //挂在音乐源
+        this.sourceAudio.connect(this.gainNode);//链接音量控制节点
+        this.gainNode.connect(this.AudioContext.destination);//链接音乐通道
     }
 
     clear() {
-        this.currentAudio = null;
-        this.sourceAudio = null;
-        this.gainNode = null;
         AudiosOpt.paused = 0;
         AudiosOpt.cachedType = 0;
         AudiosOpt.cachedTime = 0;
@@ -53,17 +56,8 @@ class Audios {
                     resolve(0);
                     return;
                 }
-                if (this.currentAudio) {
-                    await this.pause();
-                    this.clear();
-                }
-                this.currentAudio = new Audio(path);
-                this.currentAudio.crossOrigin = "anonymous"; //音源跨域
-                this.sourceAudio = this.AudioContext.createMediaElementSource(this.currentAudio);
-                this.gainNode = this.AudioContext.createGain();
-                this.sourceAudio.connect(this.gainNode);//链接音量控制节点
-                this.gainNode.connect(this.AudioContext.destination);//输出音源
-
+                this.currentAudio.src = path;
+                this.currentAudio.load();
                 this.currentAudio.oncanplay = (ev) => { //可以开始播放
                     this.currentAudio.play();//播放
                     AudiosOpt.key = key;
