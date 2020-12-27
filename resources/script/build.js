@@ -16,8 +16,8 @@ config.appId = `org.${name}`;
 config.npmRebuild = true; //是否Rebuild编译
 config.asar = true;//是否asar打包
 let nConf = {
-    "appW": 800, //app默认宽
-    "appH": 500, //app默认高
+    "appW": 1000, //app默认宽
+    "appH": 700, //app默认高
     "appPort": cfg.port,
     "appUrl": "http://127.0.0.1:3000/", //程序主访问地址
     "socketUrl": "http://127.0.0.1:3000/",// 程序socket访问地址

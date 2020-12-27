@@ -5,13 +5,17 @@ export const TingPath = reactive({
     down: "./data/down", //下载歌曲存储路径
 });
 
-
 export const SongType: string[] = [
     "mp3",
     "wav",
     "wma",
     "midi"
 ];
+
+export const SongTopData = reactive({
+    keyword: "", //搜索关键字
+    topList: [], //热榜
+});
 
 export const sheetSuffix: string = ".ting";//歌单后缀名
 

@@ -50,7 +50,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .info {
   position: relative;
   width: 100%;

@@ -1,0 +1,21 @@
+.menu-info {
+  width: 260px;
+  height: 100%;
+  padding: 40px 10px 0;
+  background-color: rgba(0, 0, 0, .75);
+}
+
+.menu-search {
+  display: flex;
+  flex-shrink: 0;
+
+  > input {
+    width: calc(100% - 55px);
+    margin: 0;
+  }
+
+  > button {
+    width: 55px;
+    margin: 0;
+  }
+}
