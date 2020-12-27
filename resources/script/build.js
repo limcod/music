@@ -32,14 +32,14 @@ config.nsis.shortcutName = "Ting"; //快捷方式名称(可中文)
 config.nsis.allowToChangeInstallationDirectory = true;//是否允许用户修改安装为位置
 config.win.requestedExecutionLevel = ["asInvoker", "highestAvailable"][0]; //应用权限
 config.win.target = [];
-// config.win.target.push({ //单文件
-//     "target": "portable"
-//     // "arch": ["x64"]
-// });
-config.win.target.push({ //nsis打包
-    "target": "nsis",
+config.win.target.push({ //单文件
+    "target": "portable",
     "arch": ["ia32"]
 });
+// config.win.target.push({ //nsis打包
+//     "target": "nsis",
+//     "arch": ["ia32"]
+// });
 let nsh = "";
 if (config.nsis.allowToChangeInstallationDirectory) {
     nsh = "!macro customHeader\n" +

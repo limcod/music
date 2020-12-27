@@ -40,7 +40,7 @@
     "uninstallerSidebar": "resources/icons/modern-wizard.bmp",
     "createDesktopShortcut": true,
     "createStartMenuShortcut": true,
-    "shortcutName": "ting",
+    "shortcutName": "Ting",
     "include": "resources/script/installer.nsh",
     "menuCategory": false,
     "displayLanguageSelector": false
@@ -68,7 +68,7 @@
     "requestedExecutionLevel": "asInvoker",
     "target": [
       {
-        "target": "nsis",
+        "target": "portable",
         "arch": [
           "ia32"
         ]

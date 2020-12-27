@@ -35,6 +35,7 @@ async function pathToSrc(path: string) {
 
 class Audios {
     public static instance: Audios;
+    public analyser: AnalyserNode = null; //音频的可视化
     private AudioContext: AudioContext = new AudioContext(); //音频api
     private currentAudio: HTMLAudioElement = new Audio(); //当前播放音源
     private sourceAudio: MediaElementAudioSourceNode = null; //音频的源
@@ -49,6 +50,9 @@ class Audios {
         this.currentAudio.crossOrigin = "anonymous"; //音源跨域
         this.gainNode = this.AudioContext.createGain(); //创建控制节点
         this.sourceAudio = this.AudioContext.createMediaElementSource(this.currentAudio); //挂在音乐源
+        this.analyser = this.AudioContext.createAnalyser();
+        this.analyser.fftSize = 512; //精度
+        this.sourceAudio.connect(this.analyser);//链接音频可视化
         this.sourceAudio.connect(this.gainNode);//链接音量控制节点
         this.gainNode.connect(this.AudioContext.destination);//链接音乐通道
     }
