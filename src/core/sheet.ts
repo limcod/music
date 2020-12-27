@@ -1,7 +1,8 @@
 import {EOL} from "os";
+import {reactive} from "vue";
+import {TingPath, getSheetPath, sheetSuffix} from "@/core"
 import {readLine, writeFile, appendFile, findFileBySuffix} from "@/lib/file";
 import Log from "@/lib/log";
-import {reactive} from "vue";
 
 export const sheetData = reactive({
     list: [] //歌单列表
@@ -25,76 +26,50 @@ export interface SongData {
     artists: [{ id: number; name: string }]; //歌手
 }
 
-
-class Sheet {
-    private static instance: Sheet;
-    private readonly suffix: string = ".ting"; //歌单后缀名
-    private path: string = "./data/sheet"; //歌单路径
-
-    static getInstance() {
-        if (!Sheet.instance) Sheet.instance = new Sheet();
-        return Sheet.instance;
+/**
+ * 当前歌单列表
+ */
+export function list() {
+    let req = findFileBySuffix(TingPath.sheet, sheetSuffix);
+    for (let i of req) {
+        readLine(i, -1).then((e: string) => {
+            try {
+                if (e) sheetData.list.push(JSON.parse(e));
+            } catch (e) {
+                Log.error(e);
+            }
+        });
     }
-
-    constructor() {
-    }
-
-    /**
-     * 获取路径
-     * @param path 歌单名称
-     */
-    getPath(path: string) {
-        return `${this.path}/${path}${this.suffix}`;
-    }
-
-    /**
-     * 当前歌单列表
-     */
-    list() {
-        let req = findFileBySuffix(this.path, this.suffix);
-        for (let i of req) {
-            readLine(i, -1).then((e: string) => {
-                try {
-                    if (e) sheetData.list.push(JSON.parse(e));
-                } catch (e) {
-                    Log.error(e);
-                }
-            });
-        }
-    }
-
-    /**
-     * 歌单详情
-     * @param path
-     */
-    async details(path: string) {
-        try {
-            let data = await readLine(path) as string[];
-            data.shift();
-            songData.list = data.map(e => JSON.parse(e)) as SongData[];
-        } catch (e) {
-            Log.error(e);
-        }
-    }
-
-    /**
-     * 创建歌单
-     */
-    async create(name: string, data: SheetList) {
-        return await writeFile(this.getPath(name), Buffer.from(JSON.stringify(data) + EOL).toString("binary"), {encoding: "binary"});
-    }
-
-    /**
-     * 添加歌曲到歌单
-     */
-    async addSong(path: string, data: SongData) {
-        try {
-            return await appendFile(path, Buffer.from(JSON.stringify(data) + EOL).toString("binary"));
-        } catch (e) {
-            return 0;
-        }
-    }
-
 }
 
-export const sheet = Sheet.getInstance();
+/**
+ * 歌单详情
+ * @param path
+ */
+async function details(path: string) {
+    try {
+        let data = await readLine(path) as string[];
+        data.shift();
+        songData.list = data.map(e => JSON.parse(e)) as SongData[];
+    } catch (e) {
+        Log.error(e);
+    }
+}
+
+/**
+ * 创建歌单
+ */
+async function create(name: string, data: SheetList) {
+    return await writeFile(getSheetPath(name), Buffer.from(JSON.stringify(data) + EOL).toString("binary"), {encoding: "binary"});
+}
+
+/**
+ * 添加歌曲到歌单
+ */
+async function addSong(path: string, data: SongData) {
+    try {
+        return await appendFile(path, Buffer.from(JSON.stringify(data) + EOL).toString("binary"));
+    } catch (e) {
+        return 0;
+    }
+}

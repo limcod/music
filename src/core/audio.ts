@@ -1,5 +1,6 @@
 import {reactive} from "vue";
-import {songData} from "./sheet";
+import {readFile} from "@/lib/file";
+import {SongType} from "@/core/index";
 
 export const AudiosOpt = reactive({
     paused: 0, //音频是否暂停  0暂停 1未暂停
@@ -9,9 +10,28 @@ export const AudiosOpt = reactive({
     cachedTime: 0, //已缓存时长
     ingTime: 0, //当前播放时长
     allTime: 0, //当前歌曲总时长
-    key: "", //当前播放的歌曲
-    musicInfo: null, //当前播放的歌曲信息
 });
+
+export interface PlayOpt {
+    name: string; //歌曲名称
+    path?: string; //歌曲链接
+}
+
+async function pathToSrc(path: string) {
+    try {
+        if (path.indexOf("http://") === -1 && path.indexOf("https://") === -1) {
+            for (let i of SongType) {
+                if (path.indexOf(i) > -1) {
+                    let req = await readFile(path, {encoding: "base64"});
+                    if (req === 0) return null;
+                    return `data:audio/${i};base64,` + req;
+                }
+            }
+        } else return path;
+    } catch (e) {
+        return null;
+    }
+}
 
 class Audios {
     public static instance: Audios;
@@ -39,62 +59,60 @@ class Audios {
         AudiosOpt.cachedTime = 0;
         AudiosOpt.ingTime = 0;
         AudiosOpt.allTime = 0;
-        AudiosOpt.key = "";
-        AudiosOpt.musicInfo = null;
     }
 
-    async play(key?: string, item?: any, path?: string) {
-        return new Promise(async (resolve, reject) => {
-            if (!path && this.currentAudio) {
-                if (AudiosOpt.paused === 0) await this.currentAudio.play();//播放
-                resolve(0);
+    async play(song?: PlayOpt) {
+        return new Promise(async (resolve) => {
+            if (song) song.path = await pathToSrc(song.path);
+            if (!song || !song.path) {
+                if (this.currentAudio.src && AudiosOpt.paused === 0) await this.currentAudio.play();//播放
+                resolve(1);
                 return;
             }
-            if (path) {
-                if (key === AudiosOpt.key) {
-                    if (AudiosOpt.paused === 0) await this.currentAudio.play();//播放
-                    resolve(0);
-                    return;
-                }
-                this.currentAudio.src = path;
-                this.currentAudio.load();
-                this.currentAudio.oncanplay = (ev) => { //可以开始播放
-                    this.currentAudio.play();//播放
-                    AudiosOpt.key = key;
-                    AudiosOpt.musicInfo = item;
-                }
 
-                this.currentAudio.oncanplaythrough = (ev) => { //当前歌曲缓存完毕
-                    this.cached();
-                }
+            if (song.path === this.currentAudio.src) {
+                if (this.currentAudio.src && AudiosOpt.paused === 0) await this.currentAudio.play();//播放
+                resolve(1);
+                return;
+            }
 
-                this.currentAudio.ondurationchange = (ev) => { //可获得歌曲时长
-                    AudiosOpt.allTime = this.currentAudio.duration;
-                }
+            this.currentAudio.src = song.path;
+            this.currentAudio.load();
 
-                this.currentAudio.onplay = (ev) => {//开始播放
-                    console.log('开始播放');
-                    this.gainNode.gain.value = 0;//设置音量为0
-                    this.currentTime(AudiosOpt.ingTime);//设置当前播放位置
-                    this.gainNode.gain.linearRampToValueAtTime(AudiosOpt.volume, this.AudioContext.currentTime + AudiosOpt.volumeGradualTime); //音量淡入
-                    AudiosOpt.paused = 1;
-                    resolve(0);
-                }
+            this.currentAudio.oncanplay = (ev) => { //可以开始播放
+                this.currentAudio.play();//播放
+            }
 
-                this.currentAudio.ontimeupdate = (ev) => {//更新播放位置
-                    AudiosOpt.ingTime = this.currentAudio.currentTime;
-                    if (AudiosOpt.cachedType !== 1) this.cached();
-                }
+            this.currentAudio.oncanplaythrough = (ev) => { //当前歌曲缓存完毕
+                this.cached();
+            }
 
-                this.currentAudio.onpause = (ev) => {//播放暂停
-                    console.log('播放暂停')
-                    AudiosOpt.paused = 0;
-                }
+            this.currentAudio.ondurationchange = (ev) => { //可获得歌曲时长
+                AudiosOpt.allTime = this.currentAudio.duration;
+            }
 
-                this.currentAudio.onended = (ev) => {//播放完毕
-                    console.log('播放完毕')
-                    this.clear();
-                }
+            this.currentAudio.onplay = (ev) => {//开始播放
+                console.log('开始播放');
+                this.gainNode.gain.value = 0;//设置音量为0
+                this.currentTime(AudiosOpt.ingTime);//设置当前播放位置
+                this.gainNode.gain.linearRampToValueAtTime(AudiosOpt.volume, this.AudioContext.currentTime + AudiosOpt.volumeGradualTime); //音量淡入
+                AudiosOpt.paused = 1;
+                resolve(1);
+            }
+
+            this.currentAudio.ontimeupdate = (ev) => {//更新播放位置
+                AudiosOpt.ingTime = this.currentAudio.currentTime;
+                if (AudiosOpt.cachedType !== 1) this.cached();
+            }
+
+            this.currentAudio.onpause = (ev) => {//播放暂停
+                console.log('播放暂停')
+                AudiosOpt.paused = 0;
+            }
+
+            this.currentAudio.onended = (ev) => {//播放完毕
+                console.log('播放完毕')
+                this.clear();
             }
         })
     }

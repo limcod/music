@@ -9,7 +9,6 @@
       <div class="list no-drag">
         <div v-for="(item) in topList"
              class="item bg-img cursor-pointer"
-             :class="{'act':`${item.vendor}|${item.id}`===AudiosOpt.key}"
              :style="{'background-image': `url('${item?.album?.cover.replace('httpss','https')}${item.vendor==='netease'?'?param=250y120':''}')`}"
              @click="play(item)">
           {{ item.name }} {{ item.vendor }}
@@ -28,8 +27,7 @@ import Head from "../components/Head.vue";
 import Audio from "../components/Audio.vue";
 import {argsState} from "../../store";
 import {getSongUrl, getTopList, searchSong} from "@/core/music";
-import {AudiosOpt, audio} from "@/core/audio";
-import {sheet, sheetData} from "@/core/sheet";
+import {audio} from "@/core/audio";
 
 export default defineComponent({
   components: {
@@ -53,9 +51,9 @@ export default defineComponent({
     });
 
     async function play(item: any) {
-      console.log(item.vendor, item.id)
+      console.log(item)
       let req = await getSongUrl(item.vendor, item.id);
-      await audio.play(`${item.vendor}|${item.id}`, item, req.url);
+      await audio.play({path: req.url, name: item.name});
     }
 
     async function search() {
@@ -69,12 +67,7 @@ export default defineComponent({
       }
     }
 
-    // sheet.list();
-    // sheet.details(sheet.getPath("text")).then(console.log)
-    // sheet.create("text");
-
     return {
-      AudiosOpt,
       ...toRefs(data),
       play,
       search
