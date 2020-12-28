@@ -7,7 +7,7 @@ import {
     Mesh,
     AmbientLight, SpotLight
 } from "three";
-import {audio} from "@/core/audio";
+import {audio, AudiosOpt} from "@/core/audio";
 
 class Animate {
     private static instance: Animate;
@@ -52,8 +52,12 @@ class Animate {
     }
 
     refresh() {
-        audio.analyser.getByteTimeDomainData(animate.waveform);
-        audio.analyser.getByteFrequencyData(animate.frequency);
+        audio.analyser.getByteTimeDomainData(this.waveform);
+        audio.analyser.getByteFrequencyData(this.frequency);
+        let i = 0;
+        this.frequency.map(e => i += e);
+        let s = i / (10000 - (AudiosOpt.volume * 1000));
+        this.cube.scale.set(s, s, s)
         animate.cube.rotation.x += 0.01;
         animate.cube.rotation.y += 0.01;
         animate.renderer.render(animate.scene, animate.camera);
@@ -72,4 +76,5 @@ export function animateRefresh() {
 
 export function animateStop() {
     if (animateRefreshNum) cancelAnimationFrame(animateRefreshNum);
+    animate.renderer.clear();
 }

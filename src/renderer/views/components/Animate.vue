@@ -1,13 +1,11 @@
 <template>
-  <div :ref="dom" class="animate-info">
-
-  </div>
+  <div :ref="dom" class="animate-info"></div>
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted} from "vue";
-import {audio} from "@/core/audio";
-import {animate,animateRefresh} from "@/core/animate";
+import {defineComponent, onMounted, onBeforeUnmount, watch} from "vue";
+import {AudiosOpt} from "@/core/audio";
+import {animate, animateRefresh, animateStop} from "@/core/animate";
 
 export default defineComponent({
   name: "Animate",
@@ -18,10 +16,25 @@ export default defineComponent({
       el = e;
     }
 
+    //监听是否播放
+    const wa = watch(() => AudiosOpt["paused"], (n) => {
+      switch (n) {
+        case 1: //播放
+          animateRefresh();
+          break;
+        case 0: //暂停
+          animateStop();
+          break;
+      }
+    })
+
     onMounted(() => {
       animate.init(el);
       animate.box();
-      animateRefresh();
+    })
+
+    onBeforeUnmount(() => {
+      wa();
     })
 
     return {
