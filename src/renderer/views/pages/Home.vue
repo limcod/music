@@ -4,7 +4,6 @@
     <div class="info">
       <Menu></Menu>
       <div class="right">
-        <Animate></Animate>
         <div class="list no-drag">
           <div v-for="item in topList"
                class="item bg-img cursor-pointer"
@@ -29,11 +28,9 @@ import {argsState} from "../../store";
 import {getSongUrl, getTopList} from "@/core/music";
 import {SongTopData} from "@/core";
 import {audio} from "@/core/audio";
-import Animate from "@/renderer/views/components/Animate.vue";
 
 export default defineComponent({
   components: {
-    Animate,
     Menu,
     Head,
     Audio

@@ -42,7 +42,7 @@ export default defineComponent({
   align-items: center;
 
   .title {
-    font: bolder 13px sans-serif;
+    font: normal 13px normal;
 
     span {
       margin-left: 4px;
