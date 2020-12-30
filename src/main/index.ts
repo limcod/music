@@ -16,7 +16,9 @@ declare global {
     }
 }
 
-global.sharedObject = {};
+global.sharedObject = {
+    isPackaged: app.isPackaged //是否打包
+};
 
 class Init {
 
