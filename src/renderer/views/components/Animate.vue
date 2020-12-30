@@ -20,10 +20,10 @@ export default defineComponent({
     const wa = watch(() => AudiosOpt["paused"], (n) => {
       switch (n) {
         case 1: //播放
-          animateRefresh();
+          // animateRefresh();
           break;
         case 0: //暂停
-          animateStop();
+          // animateStop();
           break;
       }
     })
@@ -31,6 +31,7 @@ export default defineComponent({
     onMounted(() => {
       animate.init(el);
       animate.box();
+      animateRefresh();
     })
 
     onBeforeUnmount(() => {

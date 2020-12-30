@@ -54,10 +54,12 @@ class Animate {
     refresh() {
         audio.analyser.getByteTimeDomainData(this.waveform);
         audio.analyser.getByteFrequencyData(this.frequency);
-        let i = 0;
-        this.frequency.map(e => i += e);
-        let s = i / (10000 - (AudiosOpt.volume * 1000));
-        this.cube.scale.set(s, s, s)
+        if (AudiosOpt.paused === 1) {
+            let i = 0;
+            this.frequency.map(e => i += e);
+            let s = i / (10000 - (AudiosOpt.volume * 1000));
+            this.cube.scale.set(s, s, s);
+        }else this.cube.scale.set(1, 1, 1);
         animate.cube.rotation.x += 0.01;
         animate.cube.rotation.y += 0.01;
         animate.renderer.render(animate.scene, animate.camera);
