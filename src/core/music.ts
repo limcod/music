@@ -1,4 +1,4 @@
-import MusicApi from './musicapi/music-api';
+import MusicApi from './musicapi';
 import Log from "../lib/log";
 import instance from './musicapi/util/flyio.node'
 
@@ -24,10 +24,8 @@ export async function getSongUrl(vendor: string, id: number | string) {
 export async function getTopList(id: string) {
     try {
         let req = await muApi.getTopList(id) as any;
-        let reqs = await muApi.getPlaylistDetail("netease", "5393825517", 10, 10);
-        console.log(reqs);
-        if (!req.status) return null;
-        return req.data;
+        if (req.status) return req.data;
+        return null;
     } catch (e) {
         Log.error(e.toString());
         return null;
