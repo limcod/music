@@ -1,9 +1,18 @@
 import {reactive} from "vue";
+import Log from "@/lib/log";
+import {getGlobal} from "@/lib";
 
-export const TingPath = reactive({
+let path = {
     sheet: "./data/sheet", //歌单路径
     down: "./data/down", //下载歌曲存储路径
-});
+}
+try {
+    path = getGlobal("setting")["path"];
+} catch (e) {
+    Log.error("[getSetting]", e);
+}
+
+export const TingPath = reactive(path);
 
 export const SongType: string[] = [
     "mp3",

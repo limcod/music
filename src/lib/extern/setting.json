@@ -1,3 +1,6 @@
 {
-  "a": "test"
+  "path": {
+    "sheet": "./data/sheet",
+    "down": "./data/down"
+  }
 }
