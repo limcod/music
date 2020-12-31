@@ -40,8 +40,9 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "@suen/music-api": "^1.1.15",
+    "big-integer": "^1.6.26",
     "electron-updater": "^4.3.5",
+    "flyio": "0.6.2",
     "socket.io-client": "^3.0.4",
     "three": "^0.124.0",
     "vue": "^3.0.4"
