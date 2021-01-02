@@ -48,7 +48,7 @@ export default defineComponent({
 
     async function play(item: any) {
       let req = await getSongUrl(item.vendor, item.id);
-      await audio.play({path: req.url, name: item.name});
+      if(req)await audio.play({path: req.url, name: item.name});
     }
 
     return {

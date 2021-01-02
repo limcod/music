@@ -1,6 +1,5 @@
 <template>
   <div class="menu-info">
-    <Animate></Animate>
     <div class="menu-search">
       <input v-model.trim="SongTopData.keyword" @keydown.enter="search" class="no-drag"/>
       <button class="no-drag" @click="search">搜索</button>
@@ -12,11 +11,9 @@
 import {defineComponent} from "vue";
 import {SongTopData} from "@/core";
 import {searchSong} from "@/core/music";
-import Animate from "./Animate.vue";
 
 export default defineComponent({
   name: "Menu",
-  components: {Animate},
   setup() {
 
     async function search() {
