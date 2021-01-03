@@ -4,7 +4,7 @@ import Log from "@/lib/log";
 import {WindowOpt} from "@/lib/interface";
 import ico from "./assets/tray.png";
 
-const config = require("@/lib/cfg/config.json");
+const config = require("@/cfg/config.json");
 
 export class Window {
 
