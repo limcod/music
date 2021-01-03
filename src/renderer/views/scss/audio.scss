@@ -105,8 +105,9 @@
 .audio-info-buts {
   width: calc(55%);
   padding: 0;
-  display: inline-flex;
+  display: flex;
   flex-shrink: 0;
+  justify-content: center;
   align-items: center;
 
   > .pre, .next {
