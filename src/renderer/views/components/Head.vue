@@ -1,5 +1,5 @@
 <template>
-  <div class="head">
+  <div class="head drag">
     <div class="title">
       Ting
     </div>

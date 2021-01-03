@@ -6,9 +6,5 @@ export default createRouter({
         path: "/",
         name: "Home",
         component: () => import(/* webpackChunkName: "home" */ "../views/pages/Home.vue")
-    }, {
-        path: "/message",
-        name: "Message",
-        component: () => import(/* webpackChunkName: "message" */ "../views/pages/dialogs/Message.vue")
     }]
 });

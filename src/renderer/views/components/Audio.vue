@@ -1,17 +1,8 @@
 <template>
-  <div class="audio-info">
-    <div class="audio-info-but">
-      <button class="button">◀</button>
-      <button class="button"
-              @click="AudiosOpt.paused===0?play():pause()">{{AudiosOpt.paused === 0 ? '▶' : '||'}}
-      </button>
-      <button class="button">▶</button>
-    </div>
+  <div class="audio-info no-drag">
     <div class="audio-info-progress">
-      <div>
-        {{isProgress === 1 ? audio.showTime(Number(speedProgress)) : audio.showTime(AudiosOpt.ingTime)}}
-      </div>
-      <input type="range" class="audio-info-progress-input"
+      <input type="range" class="progress-input"
+             :style="{'--audio-progres':`linear-gradient(to right, var(--theme-blue) ${isProgress===1?speedProgress/AudiosOpt.allTime.toFixed(0)*100:AudiosOpt.ingTime/AudiosOpt.allTime.toFixed(0)*100}%, #fff 0%)`}"
              :max="AudiosOpt.allTime.toFixed(0)"
              min="0"
              step="any"
@@ -19,13 +10,39 @@
              @mousedown="isProgress=1"
              @mouseup="AudiosOpt.paused===0?audio.currentIngTime(speedProgress):audio.currentTime(speedProgress);oProgress()"
              :value="isProgress===1?speedProgress:AudiosOpt.ingTime"/>
-      <div>{{audio.showTime(AudiosOpt.allTime)}}</div>
     </div>
-    <div class="audio-info-volume">
-      <input class="audio-info-volume-input" type="range" max="100" min="0" step="1"
-             :value="parseInt((AudiosOpt.volume * 100).toString())" @input="audio.setVolume($event.target.value)"/>
-      <div>{{parseInt((AudiosOpt.volume * 100).toString())}}</div>
+    <div class="audio-info-content">
+      <div class="audio-info-song">
+        <div class="cover">
+          <img v-if="AudiosOpt.songInfo"
+               :src="AudiosOpt.songInfo.cover+`${AudiosOpt.songInfo.vendor==='netease'?'?param=35y35':''}`">
+        </div>
+        <div class="content">
+          <div v-if="AudiosOpt.songInfo" class="song-name">{{ AudiosOpt.songInfo.name }}</div>
+          <div v-if="AudiosOpt.songInfo" class="song-singer"> {{ AudiosOpt.songInfo.singer }}</div>
+        </div>
+      </div>
+      <div class="audio-info-buts">
+        <div class="pre"></div>
+        <div v-if="AudiosOpt.paused===0" class="play" @click="play()"></div>
+        <div v-if="AudiosOpt.paused===1" class="pause" @click="pause()"></div>
+        <div class="next"></div>
+        <div class="rules">
+          <div class="random"></div>
+          <div class="single"></div>
+        </div>
+        <div class="volume">
+          <div class="volume-icon"></div>
+          <input class="volume-input" type="range" max="100" min="0" step="1"
+                 :style="{'--audio-volume':`linear-gradient(to right, var(--theme-blue) ${AudiosOpt.volume*100}%, #F2F2F7 0%)`}"
+                 :value="parseInt((AudiosOpt.volume * 100).toString())" @input="audio.setVolume($event.target.value)"/>
+        </div>
+      </div>
+      <div class="audio-info-menu">
+        <div class="sheet"></div>
+      </div>
     </div>
+
   </div>
 </template>
 
@@ -67,108 +84,6 @@ export default defineComponent({
 });
 </script>
 
-<style>
-.audio-info {
-  position: absolute;
-  height: 50px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  backdrop-filter: blur(4px);
-  background-color: rgba(0,0,0,.75);
-  transition: all .5s ease-in-out;
-}
-
-.audio-info-but {
-  padding: 0 10px;
-  width: 20%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.audio-info-but button {
-  color: var(--white);
-  background-color: transparent;
-}
-
-/*播放进度条*/
-.audio-info-progress {
-  position: relative;
-  padding: 0 10px;
-  width: 60%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 12px;
-}
-
-.audio-info-progress div {
-  width: 10%;
-  text-align: center;
-}
-
-.audio-info-progress-input {
-  width: 80%;
-  height: 2px;
-  padding: 0;
-  margin: 0;
-  outline: 0;
-  cursor: pointer;
-  -webkit-appearance: none !important;
-}
-
-.audio-info-progress-input::-webkit-slider-thumb {
-  width: 6px;
-  height: 6px;
-  background-color: #FFF;
-  cursor: pointer;
-  -webkit-appearance: none !important;
-}
-
-.audio-info-progress-input::-webkit-slider-thumb:active {
-  border: 0;
-  background-color: #FFF;
-}
-
-/*音量条*/
-.audio-info-volume {
-  padding: 0 10px;
-  position: relative;
-  width: 20%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 12px;
-}
-
-.audio-info-volume div {
-  width: 20%;
-  text-align: center;
-}
-
-.audio-info-volume-input {
-  width: 80%;
-  height: 2px;
-  padding: 0;
-  margin: 0;
-  outline: 0;
-  cursor: pointer;
-  -webkit-appearance: none !important;
-}
-
-.audio-info-volume-input::-webkit-slider-thumb {
-  width: 6px;
-  height: 6px;
-  background-color: #FFF;
-  cursor: pointer;
-  -webkit-appearance: none !important;
-}
-
-.audio-info-volume-input::-webkit-slider-thumb:active {
-  border: 0;
-  background-color: #FFF;
-}
+<style lang="scss" scoped>
+@import "../scss/audio";
 </style>

@@ -34,11 +34,11 @@ export async function getTopList(id: string) {
 
 /**
  * 搜索
- * @param key 关键字
+ * @param keywords 关键字
  */
-export async function searchSong(key: string) {
+export async function searchSong(keywords: string) {
     try {
-        return await muApi.searchSong(key);
+        return await muApi.searchSong(keywords);
     } catch (e) {
         Log.error(e.toString());
         return null;

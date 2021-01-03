@@ -2,7 +2,7 @@
   <div class="menu-info">
     <div class="menu-search">
       <input v-model.trim="SongTopData.keyword" @keydown.enter="search" class="no-drag"/>
-      <button class="no-drag" @click="search">搜索</button>
+      <button class="no-drag" @click="search"></button>
     </div>
   </div>
 </template>
@@ -36,5 +36,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../css/menu";
+@import "../scss/menu";
 </style>

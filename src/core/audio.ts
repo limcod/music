@@ -2,6 +2,14 @@ import {reactive} from "vue";
 import {readFile} from "@/lib/file";
 import {SongType} from "@/core/index";
 
+export interface PlayOpt {
+    name: string; //歌曲名称
+    cover: string; //歌曲图片
+    singer: string; //歌手
+    vendor: string; //歌曲来源
+    path?: string; //歌曲链接
+}
+
 export const AudiosOpt = reactive({
     paused: 0, //音频是否暂停  0暂停 1未暂停
     volume: 1, //音量
@@ -10,12 +18,8 @@ export const AudiosOpt = reactive({
     cachedTime: 0, //已缓存时长
     ingTime: 0, //当前播放时长
     allTime: 0, //当前歌曲总时长
+    songInfo: null //当前歌曲信息
 });
-
-export interface PlayOpt {
-    name: string; //歌曲名称
-    path?: string; //歌曲链接
-}
 
 async function pathToSrc(path: string) {
     try {
@@ -79,7 +83,8 @@ class Audios {
                 resolve(1);
                 return;
             }
-
+            this.clear();
+            AudiosOpt.songInfo = song;
             this.currentAudio.src = song.path;
             this.currentAudio.load();
 
@@ -116,7 +121,10 @@ class Audios {
 
             this.currentAudio.onended = (ev) => {//播放完毕
                 console.log('播放完毕')
-                this.clear();
+                AudiosOpt.paused = 0;
+                AudiosOpt.cachedType = 0;
+                AudiosOpt.cachedTime = 0;
+                AudiosOpt.ingTime = 0;
             }
         })
     }

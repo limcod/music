@@ -2,7 +2,7 @@ import {join} from "path";
 import {shell, app, BrowserWindow, BrowserWindowConstructorOptions, Menu, Tray} from "electron";
 import Log from "@/lib/log";
 import {WindowOpt} from "@/lib/interface";
-import ico from "@/assets/tray.png";
+import ico from "./assets/tray.png";
 
 const config = require("@/lib/cfg/config.json");
 
@@ -20,12 +20,13 @@ export class Window {
      * */
     browserWindowOpt(wh: number[]): BrowserWindowConstructorOptions {
         return {
+            minWidth:wh[0],
+            minHeight:wh[1],
             width: wh[0],
             height: wh[1],
             transparent: true,
             autoHideMenuBar: true,
-            resizable: false,
-            maximizable: false,
+            resizable: true,
             frame: false,
             show: false,
             webPreferences: {
@@ -76,7 +77,7 @@ export class Window {
             opt.y = parseInt((this.main.getPosition()[1] + ((this.main.getBounds().height - opt.height) / 2)).toString());
         }
         opt.modal = args.modal || false;
-        opt.resizable = args.resizable || false;
+        opt.resizable = args.resizable || opt.resizable;
         let win = new BrowserWindow(opt);
         this.group[win.id] = {
             route: args.route,

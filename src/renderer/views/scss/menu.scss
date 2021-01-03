@@ -1,0 +1,41 @@
+@import "~@/renderer/views/scss/mixin.scss";
+
+.menu-info {
+  width: 100%;
+  height: 100%;
+  background-color: #E3E3E8;
+  color: var(--black);
+  padding: 40px 10px 0;
+}
+
+.menu-search {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  z-index: 1;
+
+  > input {
+    width: calc(100% - 32px);
+    margin: 0;
+  }
+
+  > button {
+    width: 32px;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:before {
+      @include device-pixel("~@/renderer/assets/icons/search_icon");
+      content: "";
+      width: 15px;
+      height: 15px;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+    }
+  }
+}
