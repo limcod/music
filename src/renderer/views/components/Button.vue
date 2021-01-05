@@ -14,7 +14,7 @@ button {
 </template>
 <script>
 export default {
-  name: 'TingButton',
+  name: 'Button',
   props: {
     text: {
       type: String,
