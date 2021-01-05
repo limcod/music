@@ -3,25 +3,30 @@
   display: flex;
   width: 100vw;
   height: 100vh;
-  .left {
+
+  > .left {
     width: 60%;
     min-width: 421px;
     background-color: red;
     background: url('https://img.shuaxinjs.cn/apple.jpg') no-repeat;
   }
-  .right {
+
+  > .right {
     width: 40%;
     min-width: 379px;
     // background-color: blue;
     align-self: center;
-    .main {
+
+    > .main {
       width: 260px;
       margin: 0 auto;
       text-align: right;
-      img {
+
+      > img {
         width: 20%;
       }
-      .title {
+
+      > .title {
         margin-top: 17px;
         width: 260px;
         height: 41px;
@@ -40,24 +45,25 @@
     <div class="left"></div>
     <div class="right">
       <div class="main">
-        <img src="https://img.shuaxinjs.cn/favicon-16x16-next.png" alt="logo" />
+        <img src="https://img.shuaxinjs.cn/favicon-16x16-next.png" alt="logo"/>
         <div class="title">欢迎来到Ting</div>
-        <TingButton @click="handleJumpHome" text="开始" />
+        <Button @click="handleJumpHome" text="开始"/>
       </div>
     </div>
   </div>
 </template>
 <script>
 import router from '@/renderer/router'
-import TingButton from '../components/TingButton.vue'
+import Button from '../components/Button.vue'
+
 export default {
   name: 'Welcome',
   components: {
-    TingButton,
+    Button,
   },
   setup() {
     const handleJumpHome = () => {
-      router.push({ path: '/home' })
+      router.push({path: '/home'})
     }
     return {
       handleJumpHome,
